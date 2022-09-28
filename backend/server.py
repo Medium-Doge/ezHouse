@@ -51,7 +51,7 @@ class Server():
 
         data = pd.DataFrame([data])
 
-        return {"predicted_price":self.regression_tree.model.predict(data)[0]}
+        return {"predicted_price" : self.regression_tree.model.predict(data)[0]}
 
 class RegressionTreeModel():
     def __init__(self):
@@ -123,7 +123,9 @@ class APIConnector():
     def get():
         pass
 
+def main():
+    server = Server(__name__)
+    server.app.run("0.0.0.0")
     
 if __name__ == "__main__":
-    server = Server(__name__)
-    server.app.run()
+    main()
