@@ -4,7 +4,8 @@ Python 3.9.5
 Pre-requisites:
 pip install scikit-learn
 pip install pandas
-pip install flask
+pip install Flask==2.1.2
+pip install werkzeug==2.1.2
 """
 ##awfafea
 import pandas as pd
@@ -42,6 +43,10 @@ class Server():
             flat_type = request.args.get("flat_type")
             storey_range = request.args.get("storey_range")
             return self.getPrediction(postal_code, town, flat_type, storey_range)
+
+        @self.app.route("/amenities", methods=["GET"])
+        def __getAmenities():
+            return self.getAmenities()
             
     def hello_world(self):
         return "Hello World"
@@ -65,9 +70,13 @@ class Server():
 
         return {"predicted_price" : self.regression_tree.model.predict(data)[0]}
 
+    def getAmenities(self):
+        raise NotImplementedError
+
 class RegressionTreeModel():
     def __init__(self):
         self.resale = pd.read_csv(RESALE)
+        self.hdb_info = pd.read_csv(HDBINFO)
         print("\t└Initialising datasets...")
         self.initialiseDatasets()
         print("\t└Setting predictors...")
@@ -79,10 +88,10 @@ class RegressionTreeModel():
         self.resale.drop(self.resale.columns[self.resale.columns.str.contains('unnamed',case = False)],
                             axis=1, inplace=True)
 
-        self.hdb_info = pd.read_csv(HDBINFO)
         self.hdb_info.drop(self.hdb_info.columns[self.hdb_info.columns.str.contains('unnamed',case = False)],
                             axis = 1, inplace = True)
 
+        # update postal code in resale dataframe from hdb_info dataframe
         for index, row in self.resale.iterrows():
             self.resale.at[index, "postal_code"] = \
                 self.hdb_info[(self.hdb_info["Address"] == "{} {}".format(row[3],row[4]))]["postal_code"].array[0]
@@ -103,6 +112,7 @@ class RegressionTreeModel():
 
     def setPredictors(self):
         # get predictors
+
         lease = [col for col in self.resale if col.startswith("remaining_lease")]
         towns = [col for col in self.resale if col.startswith("town_")]
         flat_types = [col for col in self.resale if col.startswith("flat_type_")]
