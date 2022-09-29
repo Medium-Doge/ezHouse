@@ -1,13 +1,16 @@
 """
+Python 3.9.5
+
 Pre-requisites:
 pip install scikit-learn
 pip install pandas
+pip install flask
 """
 
 import pandas as pd
-import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor
+from datetime import date
 
 from flask import Flask, request
 
@@ -33,18 +36,27 @@ class Server():
 
         @self.app.route("/predict", methods=["GET"])
         def __getPrediction():
-            lease = request.args.get("lease")
+            # lease = request.args.get("lease")
+            postal_code = request.args.get("postal_code")
             town = request.args.get("town")
             flat_type = request.args.get("flat_type")
             storey_range = request.args.get("storey_range")
-            return self.getPrediction(lease, town, flat_type, storey_range)
+            return self.getPrediction(postal_code, town, flat_type, storey_range)
             
     def hello_world(self):
         return "Hello World"
 
-    def getPrediction(self, lease, town, flat_type, storey_range):
+    def getPrediction(self, postal_code, town, flat_type, storey_range):
         data = dict(zip(self.regression_tree.predictors, [0] * len(self.regression_tree.predictors)))
-        data["remaining_lease(months)"] = int(lease)
+        # data["remaining_lease(months)"] = int(lease)
+        # data["town_{}".format(town)] = 1
+        data["remaining_lease(months)"] = \
+            (date.today().year - 
+            int(self.regression_tree.hdb_info.loc[
+                self.regression_tree.hdb_info["postal_code"] == postal_code
+                ]
+                ["year_completed"])) * 12
+    
         data["town_{}".format(town)] = 1
         data["flat_type_{}".format(flat_type)] = 1
         data["storey_range_{}".format(storey_range)] = 1
