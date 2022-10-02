@@ -98,6 +98,8 @@ class RegressionTreeModel():
 
         # change "month" column to datetime datatype
         self.resale["month"] =  pd.to_datetime(self.resale["month"])
+        self.resale.sort_values(by="month", ascending=False, inplace=True) 
+        # resale dataframe is now sorted with latest date as the first entry
         
         # change remaining lease in years to months
         for index, row in self.resale.iterrows():
