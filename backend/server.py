@@ -1,7 +1,7 @@
 """
-Python 3.9.5
-
 Pre-requisites:
+Python 3.9.5
+==========================
 pip install scikit-learn
 pip install pandas
 pip install Flask==2.1.2
@@ -49,7 +49,7 @@ class Server():
             return self.getAmenities()
             
     def hello_world(self):
-        return "Hello World"
+        return {"test": ["Hello", "World"]}
 
     def getPrediction(self, postal_code, town, flat_type, storey_range):
         data = dict(zip(self.regression_tree.predictors, [0] * len(self.regression_tree.predictors)))
@@ -95,6 +95,9 @@ class RegressionTreeModel():
         for index, row in self.resale.iterrows():
             self.resale.at[index, "postal_code"] = \
                 self.hdb_info[(self.hdb_info["Address"] == "{} {}".format(row[3],row[4]))]["postal_code"].array[0]
+
+        # change "month" column to datetime datatype
+        self.resale["month"] =  pd.to_datetime(self.resale["month"])
         
         # change remaining lease in years to months
         for index, row in self.resale.iterrows():
