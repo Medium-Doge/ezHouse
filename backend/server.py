@@ -77,6 +77,11 @@ class RegressionTreeModel():
     def __init__(self):
         self.resale = pd.read_csv(RESALE)
         self.hdb_info = pd.read_csv(HDBINFO)
+
+        self.towns = None
+        self.floor_types = None
+        self.storey_ranges = None
+
         print("\t└Initialising datasets...")
         self.initialiseDatasets()
         print("\t└Setting predictors...")
@@ -109,6 +114,16 @@ class RegressionTreeModel():
 
         self.resale.rename(columns = {"remaining_lease":"remaining_lease (months)"}, inplace=True)
         self.resale["remaining_lease (months)"] = self.resale["remaining_lease (months)"].astype("int64")
+
+        # export towns, floor_types, storey_ranges before encoding them
+        self.towns = list(self.resale["town"].unique())
+        self.towns.sort()
+
+        self.flat_types = list(self.resale["flat_type"].unique())
+        self.flat_types.sort()
+
+        self.storey_ranges = list(self.resale["storey_range"].unique())
+        self.storey_ranges.sort()
 
         # encode categorial variables
         self.resale = pd.get_dummies(self.resale, columns=["town", "flat_type", "storey_range", "flat_model"])
