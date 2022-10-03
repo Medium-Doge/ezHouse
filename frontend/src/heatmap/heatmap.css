@@ -1,0 +1,11 @@
+.emptyspace {
+    height: 300px;
+
+}
+
+.heatmap_title {
+    font-size: 26px;
+    font-weight: bolder;
+    color: #4A73A1;
+    margin-left: 40px;
+}
