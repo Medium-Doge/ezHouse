@@ -18,10 +18,10 @@
 .homepage_title {
     font-size: 26px;
     font-weight: bolder;
-    margin-left: 10px;;
+    margin-left: 10px;
 }
 .homepage_body {
-    margin: 0 25%;
+    margin: 0 20%;
     width: 70%;
     margin-top: 150px;
 }
@@ -83,7 +83,7 @@
 
 
 .homepage_stats {
-    margin: 0 25%;
+    margin: 0 20%;
     margin-top: 200px;
     display: flex;
     justify-content: space-between;

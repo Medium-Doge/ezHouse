@@ -22,6 +22,12 @@ const Homepage = () => {
                         <option value="yellow">Yellow</option>
                     </select>
                     <select id="flattype" class="form_element select" placeholder="boo">
+                        <option value="" disabled selected hidden>TOWN</option>
+                        <option value="red">Red</option>
+                        <option value="orange">Orange</option>
+                        <option value="yellow">Yellow</option>
+                    </select>
+                    <select id="flattype" class="form_element select" placeholder="boo">
                         <option value="" disabled selected hidden>FLAT TYPE</option>
                         <option value="red">Red</option>
                         <option value="orange">Orange</option>
