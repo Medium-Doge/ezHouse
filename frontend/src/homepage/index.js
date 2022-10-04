@@ -14,7 +14,7 @@ const Homepage = () => {
                 <div>One stop service to locate your dream home in Singapore with Artificial Intelligence price predictor</div>
 
                 <form class="form-inline homepage_form" action="/action_page.php">
-                <input type="text" class="fontAwesome form_element text" name="postalcode" placeholder="  &#xF002; Enter postal code" value=""/>
+                <input type="text" class="fontAwesome form_element text" name="postalcode" placeholder="&#xF002; Enter postal code" value=""/>
                     <select id="flatstorey" class="form_element select">
                         <option value="" disabled selected hidden>FLAT STOREY</option>
                         <option value="red">Red</option>

@@ -4,7 +4,12 @@ import features from './sgheatmap.json';
 import 'leaflet/dist/leaflet.css';
 import {MapContainer, GeoJSON, TileLayer} from 'react-leaflet';
 
-
+function getRandom() {
+    const min = 0;
+    const max = 3500;
+    const rand = min + Math.random() * (max - min);
+    return rand;
+}
 
 const Heatmap = () => {
 
@@ -12,15 +17,7 @@ const Heatmap = () => {
     /* function determining what should happen onmouseover, this function updates our state*/
     const highlightFeature = (e=> {
         var layer = e.target;
-        console.log(e.target);
-        // setOnselect({
-        //     county:County,
-        //     total:Total,
-        //     male:Male,
-        //     female:Female,
-        //     intersex:Intersex,
-        //     density: Desnity
-        // });
+        console.log(e.target.feature.properties.PLN_AREA_N)
         layer.setStyle({
             weight: 1,
             color: "black",
@@ -30,7 +27,9 @@ const Heatmap = () => {
     /*resets our state i.e no properties should be displayed when a feature is not clicked or hovered over */
     const resetHighlight= (e =>{
         // setOnselect({});
-        e.target.setStyle(style(e.target.feature));
+        e.target.setStyle({
+            fillOpacity: 0.5
+        });
     })
     /* this function is called when a feature in the map is hovered over or when a mouse moves out of it, the function calls two functions
      highlightFeature and resetHighlight*/
@@ -51,12 +50,12 @@ const Heatmap = () => {
             : density > 236
             ? '#fc9272'
             : density > 23
-            ? '#000000'
-            : '#ffffff';
+            ? '#fcbba1'
+            : '#fee5d9';
     })
     const style = (feature => {
         return ({
-            fillColor: mapPolygonColorToDensity(feature.properties.Desnity),
+            fillColor: mapPolygonColorToDensity(getRandom()),
             weight: 1,
             opacity: 1,
             color: 'black',
@@ -65,7 +64,7 @@ const Heatmap = () => {
         });
     });
     const mapStyle = {
-        height: '55vh',
+        height: '100vh',
         width: '85%',
         margin: '0 auto',
     }
@@ -94,7 +93,8 @@ const Heatmap = () => {
                     )}
                 </MapContainer>
         </div>
-
+        <div class="emptyspace">
+        </div>
     </div>
   )
 }
