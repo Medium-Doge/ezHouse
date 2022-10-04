@@ -1,14 +1,22 @@
 import React from 'react'
 import triangle from './triangle.svg';
 import background from './background.svg';
+import { useNavigate } from "react-router-dom";
 import css from './homepage.css';
+
 const Homepage = () => {
+
+    let navigate = useNavigate();
+    const routeChange = () =>{
+        navigate('/unauthorized');
+    }
+
     return (
         <div class="homepage_main" style={{ backgroundImage: `url(${background})` }}>
             <div class="homepage_title">ezHouse</div>
 
 
-            
+
             <div class="homepage_body">
                 <div class="homepage_bodyt1">Locate your dream home</div>
                 <div>One stop service to locate your dream home in Singapore with Artificial Intelligence price predictor</div>
@@ -34,7 +42,7 @@ const Homepage = () => {
                         <option value="yellow">Yellow</option>
                     </select>
                     <div class="homepage_formbuttonwrap">
-                        <button class="fontAwesome homepage_formbutton" type="submit form_element">SEARCH &nbsp;&#xF061;</button>
+                        <button class="fontAwesome homepage_formbutton" type="submit form_element" onClick={routeChange}>SEARCH &nbsp;&#xF061;</button>
 
                     </div>
                 </form>
