@@ -7,11 +7,13 @@ pip install pandas
 pip install Flask==2.1.2
 pip install werkzeug==2.1.2
 """
-##awfafea
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor
 from datetime import date
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 from flask import Flask, request
 
@@ -44,6 +46,10 @@ class Server():
             storey_range = request.args.get("storey_range")
             return self.getPrediction(postal_code, town, flat_type, storey_range)
 
+        @self.app.route("/recentlysold", methods=["GET"])
+        def __getRecentlySold():
+            return self.getRecentlySold()
+
         @self.app.route("/amenities", methods=["GET"])
         def __getAmenities():
             return self.getAmenities()
@@ -70,6 +76,18 @@ class Server():
 
         return {"predicted_price" : self.regression_tree.model.predict(data)[0]}
 
+    def getRecentlySold(self):
+        date = format(datetime.now() - relativedelta(months=1), "%Y-%m") + "-01"
+        temp_df = self.regression_tree.resale.loc[self.regression_tree.resale["month"] >= date]
+
+        return {
+            "town"      :   temp_df["town"].value_counts().to_dict(),
+            "records"   :   temp_df.to_dict("records")
+        }
+
+
+        # return temp_df["town"].value_counts().to_dict()
+
     def getAmenities(self):
         raise NotImplementedError
 
@@ -94,12 +112,13 @@ class RegressionTreeModel():
                             axis=1, inplace=True)
 
         self.hdb_info.drop(self.hdb_info.columns[self.hdb_info.columns.str.contains('unnamed',case = False)],
-                            axis = 1, inplace = True)
+                            axis=1, inplace=True)
 
         # update postal code in resale dataframe from hdb_info dataframe
         for index, row in self.resale.iterrows():
-            self.resale.at[index, "postal_code"] = \
-                self.hdb_info[(self.hdb_info["Address"] == "{} {}".format(row[3],row[4]))]["postal_code"].array[0]
+            # self.resale.at[index, "postal_code"] = \
+            #     self.hdb_info[(self.hdb_info["Address"] == "{} {}".format(row[3],row[4]))]["postal_code"].array[0]
+            self.resale.at[index, "postal_code"] = self.hdb_info[(self.hdb_info["Address"] == "{} {}".format(row[3], row[4]))]["postal_code"].array[0]
 
         # change "month" column to datetime datatype
         self.resale["month"] =  pd.to_datetime(self.resale["month"])
@@ -125,27 +144,28 @@ class RegressionTreeModel():
         self.storey_ranges = list(self.resale["storey_range"].unique())
         self.storey_ranges.sort()
 
+        self.resale_train = self.resale.copy()
         # encode categorial variables
-        self.resale = pd.get_dummies(self.resale, columns=["town", "flat_type", "storey_range", "flat_model"])
-        self.resale.columns = self.resale.columns.str.replace(" ","")
-        self.resale.columns = self.resale.columns.str.replace("/","_")
+        self.resale_train = pd.get_dummies(self.resale_train, columns=["town", "flat_type", "storey_range", "flat_model"])
+        self.resale_train.columns = self.resale_train.columns.str.replace(" ","")
+        self.resale_train.columns = self.resale_train.columns.str.replace("/","_")
 
     def setPredictors(self):
         # get predictors
 
-        lease = [col for col in self.resale if col.startswith("remaining_lease")]
-        towns = [col for col in self.resale if col.startswith("town_")]
-        flat_types = [col for col in self.resale if col.startswith("flat_type_")]
-        storey_ranges = [col for col in self.resale if col.startswith("storey_range_")]
-        # flat_models = [col for col in self.resale if col.startswith("flat_model_")]
+        lease = [col for col in self.resale_train if col.startswith("remaining_lease")]
+        towns = [col for col in self.resale_train if col.startswith("town_")]
+        flat_types = [col for col in self.resale_train if col.startswith("flat_type_")]
+        storey_ranges = [col for col in self.resale_train if col.startswith("storey_range_")]
+        # flat_models = [col for col in self.resale_train if col.startswith("flat_model_")]
 
         # self.predictors = towns + flat_types + storey_ranges + flat_models
         self.predictors = lease + towns + flat_types + storey_ranges
 
     def createModel(self):
         # Extract Response and Predictors
-        y = pd.DataFrame(self.resale["resale_price"])
-        x = pd.DataFrame(self.resale[self.predictors])
+        y = pd.DataFrame(self.resale_train["resale_price"])
+        x = pd.DataFrame(self.resale_train[self.predictors])
 
         X_train, X_test, y_train, y_test = train_test_split(x, y, test_size = 0.20)
         self.model = DecisionTreeRegressor()
