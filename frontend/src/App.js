@@ -2,13 +2,13 @@ import logo from './logo.svg';
 import './App.css';
 import Homepage from './homepage';
 import Heatmap from './heatmap';
-import Missing from './homepage/Missing';
-import Unauthorized from './homepage/Unauthorized';
-import Register from './homepage/Register';
-import Login from './homepage/Login';
-import LinkPage from './homepage/LinkPage';
-import RequireAuth from './homepage/RequireAuth';
-
+import Missing from './authorisation/Missing';
+import Unauthorized from './authorisation/Unauthorized';
+import Register from './authorisation/Register';
+import Login from './authorisation/Login';
+import LinkPage from './authorisation/LinkPage';
+import RequireAuth from './authorisation/RequireAuth';
+import PredictPrice from './predictprice';
 
 import {
   BrowserRouter,
