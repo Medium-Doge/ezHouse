@@ -82,7 +82,7 @@ const Homepage = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(values);
-        axios.get('http://172.26.14.34:5000/predict?postal_code=' + values.postal_code + '&town=' + values.town + '&flat_type=' + values.flat_type + '&storey_range=' + values.storey_range)
+        axios.get('https://172.26.14.34:5000/predict?postal_code=' + values.postal_code + '&town=' + values.town + '&flat_type=' + values.flat_type + '&storey_range=' + values.storey_range)
         .then(res => {
         const persons = res.data;
         console.log("boo");
