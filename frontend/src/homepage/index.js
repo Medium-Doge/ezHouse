@@ -82,7 +82,7 @@ const Homepage = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(values);
-        axios.get('https://172.26.14.34:5000/predict?postal_code=' + values.postal_code + '&town=' + values.town + '&flat_type=' + values.flat_type + '&storey_range=' + values.storey_range)
+        axios.get('http://54.255.164.208:5000/predict?postal_code=' + values.postal_code + '&town=' + values.town + '&flat_type=' + values.flat_type + '&storey_range=' + values.storey_range)
         .then(res => {
         const persons = res.data;
         console.log("boo");
@@ -123,8 +123,8 @@ const Homepage = () => {
                         <option value="orange">Orange</option>
                         <option value="EXECUTIVE">EXECUTIVE</option>
                     </select>
-                    <div class="homepage_formbuttonwrap">
-                        <button class="fontAwesome homepage_formbutton" type="submit form_element" >SEARCH &nbsp;&#xF061;</button>
+                    <div class="homepage_formbuttonwrap form_element">
+                        <button class="fontAwesome homepage_formbutton" type="submit" >SEARCH &nbsp;&#xF061;</button>
 
                     </div>
                 </form>

@@ -41,14 +41,12 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="linkpage" element={<LinkPage />} />
           <Route path="unauthorized" element={<Unauthorized />} />
-
+          <Route path="predictPrice" element={<PredictPrice />} />
           <Route element={<RequireAuth allowedRoles={[ROLES.Normal]} />}>
               <Route path="index" element={<Home />} />
           </Route>
 
-          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
-              <Route path="predictPrice" element={<Home />} />
-          </Route>
+          
 
           {/* catch all */}
           <Route path="*" element={<Missing />} />

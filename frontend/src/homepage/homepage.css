@@ -46,7 +46,7 @@
 
 .form_element {
     border: 0;
-    width: 150px;
+    width: 25%;
 }
 .form_element.select{
     height: 50px;
@@ -62,7 +62,6 @@
 }
 
 .homepage_formbuttonwrap {
-    width: 150px;
     background-color: white;
     height: 50px;
     border-radius: 0 5px 5px 0;
