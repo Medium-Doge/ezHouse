@@ -85,9 +85,6 @@ class Server():
             "records"   :   temp_df.to_dict("records")
         }
 
-
-        # return temp_df["town"].value_counts().to_dict()
-
     def getAmenities(self):
         raise NotImplementedError
 
@@ -187,7 +184,7 @@ class APIConnector():
 
 def main():
     server = Server(__name__)
-    server.app.run("0.0.0.0", port=443, ssl_context=("backend/server.crt", "backend/server.key"))
+    server.app.run("0.0.0.0", port=5000, ssl_context=("backend/server.crt", "backend/server.key"))
     
 if __name__ == "__main__":
     main()
