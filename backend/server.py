@@ -50,6 +50,10 @@ class Server():
         def __getRecentlySold():
             return self.getRecentlySold()
 
+        @self.app.route("/categories", methods=["GET"])
+        def __getCategories():
+            return self.getCategories()
+
         @self.app.route("/amenities", methods=["GET"])
         def __getAmenities():
             return self.getAmenities()
@@ -85,6 +89,14 @@ class Server():
             "records"   :   temp_df.to_dict("records")
         }
 
+    def getCategories(self):
+        """
+        Return self.regression_tree.towns, self.regression_tree.flat_types, self.regression_tree.storey_ranges
+        as key value pairs in a dict: "towns" : self.regression_tree.towns... etc
+        """
+        
+        pass
+
     def getAmenities(self):
         raise NotImplementedError
 
@@ -94,7 +106,7 @@ class RegressionTreeModel():
         self.hdb_info = pd.read_csv(HDBINFO)
 
         self.towns = None
-        self.floor_types = None
+        self.flat_types = None
         self.storey_ranges = None
 
         print("\t└Initialising datasets...")
