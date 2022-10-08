@@ -1,3 +1,4 @@
+
 """
 Pre-requisites:
 Python 3.9.5
@@ -83,7 +84,7 @@ class Server():
     def getRecentlySold(self):
         date = format(datetime.now() - relativedelta(months=1), "%Y-%m") + "-01"
         temp_df = self.regression_tree.resale.loc[self.regression_tree.resale["month"] >= date]
-
+        
         return {
             "town"      :   temp_df["town"].value_counts().to_dict(),
             "records"   :   temp_df.to_dict("records")
@@ -95,7 +96,8 @@ class Server():
         as key value pairs in a dict: "towns" : self.regression_tree.towns... etc
         """
         
-        pass
+        
+        return { "towns" : self.regression_tree.towns, "flat_types" : self.regression_tree.flat_types, "storey_ranges" : self.regression_tree.storey_ranges}
 
     def getAmenities(self):
         raise NotImplementedError
