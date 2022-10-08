@@ -15,6 +15,7 @@ from sklearn.tree import DecisionTreeRegressor
 from datetime import date
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import requests
 
 from flask import Flask, request
 
@@ -62,24 +63,77 @@ class Server():
     def hello_world(self):
         return {"test": ["Hello", "World"]}
 
-    def getPrediction(self, postal_code, town, flat_type, storey_range):
-        data = dict(zip(self.regression_tree.predictors, [0] * len(self.regression_tree.predictors)))
-        # data["remaining_lease(months)"] = int(lease)
-        # data["town_{}".format(town)] = 1
-        data["remaining_lease(months)"] = \
-            (date.today().year - 
-            int(self.regression_tree.hdb_info.loc[
-                self.regression_tree.hdb_info["postal_code"] == postal_code
-                ]
-                ["year_completed"])) * 12
-    
-        data["town_{}".format(town)] = 1
-        data["flat_type_{}".format(flat_type)] = 1
-        data["storey_range_{}".format(storey_range)] = 1
+    def getPrediction(self, postal_code:str, town:str, flat_type:str, storey_range):
+        if postal_code in self.regression_tree.hdb_info["postal_code"].values:
+            hdb_info = self.regression_tree.hdb_info
+            data = dict(zip(self.regression_tree.predictors, [0] * len(self.regression_tree.predictors)))
 
-        data = pd.DataFrame([data])
+            data["remaining_lease(months)"] = \
+                (date.today().year - 
+                int(hdb_info.loc[
+                    hdb_info["postal_code"] == postal_code
+                    ]
+                    ["year_completed"])) * 12
+        
+            data["town_{}".format(town)] = 1
+            data["flat_type_{}".format(flat_type)] = 1
+            data["storey_range_{}".format(storey_range)] = 1
 
-        return {"predicted_price" : self.regression_tree.model.predict(data)[0]}
+            data = pd.DataFrame([data])
+
+            # get lat lon from OneMap API
+            query = requests.get(
+                "https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=N".format(postal_code)
+                ).json()
+
+            if query["found"] == 0: # unable to find lat lon data from one map api
+                return {
+                    "found" : False,
+                    "predicted_price" : None
+                }
+            else:
+                lat = query["results"][0]["LATITUDE"]
+                lon = query["results"][0]["LONGITUDE"]
+
+            house_info = hdb_info.loc[hdb_info["postal_code"] == postal_code].iloc[0]
+
+            return {
+                "found"                 : True,
+                "latitude"              : lat,
+                "longitude"             : lon,
+                "predicted_price"       : self.regression_tree.model.predict(data)[0],
+                "blk_no"                : int(house_info["blk_no"]),
+                "street"                : house_info["street"],
+                "max_floor_lvl"         : int(house_info["max_floor_lvl"]),
+                "year_completed"        : str(house_info["year_completed"]),
+                "residential"           : house_info["residential"],
+                "commercial"            : house_info["commercial"],
+                "market_hawker"         : house_info["market_hawker"],
+                "miscellaneous"         : house_info["miscellaneous"],
+                "multistorey_carpark"   : house_info["multistorey_carpark"],
+                "precinct_pavilion"     : house_info["precinct_pavilion"],
+                "bldg_contract_town"    : house_info["bldg_contract_town"],
+                "total_dwelling_units"  : int(house_info["total_dwelling_units"]),
+                "1room_sold"            : int(house_info["1room_sold"]),
+                "2room_sold"            : int(house_info["2room_sold"]),
+                "3room_sold"            : int(house_info["3room_sold"]),
+                "4room_sold"            : int(house_info["4room_sold"]),
+                "5room_sold"            : int(house_info["5room_sold"]),
+                "exec_sold"             : int(house_info["exec_sold"]),
+                "multigen_sold"         : int(house_info["multigen_sold"]),
+                "studio_apartment_sold" : int(house_info["studio_apartment_sold"]),
+                "1room_rental"          : int(house_info["1room_rental"]),
+                "2room_rental"          : int(house_info["2room_rental"]),
+                "3room_rental"          : int(house_info["3room_rental"]),
+                "other_room_rental"     : int(house_info["other_room_rental"]),
+                "address"               : house_info["Address"]
+            }
+        
+        else:
+            return {
+                "found" : False,
+                "predicted_price" : None
+            }
 
     def getRecentlySold(self):
         date = format(datetime.now() - relativedelta(months=1), "%Y-%m") + "-01"
@@ -96,8 +150,11 @@ class Server():
         as key value pairs in a dict: "towns" : self.regression_tree.towns... etc
         """
         
-        
-        return { "towns" : self.regression_tree.towns, "flat_types" : self.regression_tree.flat_types, "storey_ranges" : self.regression_tree.storey_ranges}
+        return { 
+            "towns" : self.regression_tree.towns, 
+            "flat_types" : self.regression_tree.flat_types, 
+            "storey_ranges" : self.regression_tree.storey_ranges
+        }
 
     def getAmenities(self):
         raise NotImplementedError
