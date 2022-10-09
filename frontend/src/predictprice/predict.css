@@ -1,0 +1,21 @@
+.mapStyle {
+    height: '50vh';
+    width: '40%';
+    margin: '0';
+}
+
+.predictprice_wrapper {
+    display: flex;
+}
+
+.predictprice_textwrapper {
+    width: 50%; 
+    margin: 0;
+    display: inline-block;
+}
+
+.predictprice_mapwrapper {
+    width: 50%;
+    margin: 0;
+    display: inline-block;
+}

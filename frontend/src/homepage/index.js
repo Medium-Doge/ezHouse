@@ -80,15 +80,19 @@ const Homepage = () => {
     };
 
     const handleSubmit = (event) => {
-        event.preventDefault();
         console.log(values);
-        axios.get('http://54.255.164.208:5000/predict?postal_code=' + values.postal_code + '&town=' + values.town + '&flat_type=' + values.flat_type + '&storey_range=' + values.storey_range)
-        .then(res => {
-        const persons = res.data;
-        console.log("boo");
-        console.log(res.data);
-        console.log(res);
-      })
+        navigate('/predictprice', { state : values})
+    //     event.preventDefault();
+    //     console.log(values);
+    //     axios({method: 'get', 
+    //     url:'http://54.255.164.208:5000/predict?postal_code=' + values.postal_code + '&town=' + values.town + '&flat_type=' + values.flat_type + '&storey_range=' + values.storey_range,
+    //     withCredentials: false})
+    //     .then(res => {
+    //     const persons = res.data;
+    //     console.log("boo");
+    //     console.log(res.data);
+    //     console.log(res);
+    //   })
     }
 
     return (

@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import css from './heatmap.css';
 import features from './sgheatmap.json';
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, GeoJSON, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
+import { MapContainer, GeoJSON, TileLayer, Marker, Popup, useMapEvents, useMap, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
 import Drawer from 'react-modern-drawer'
 import 'react-modern-drawer/dist/index.css'
+import axios from 'axios';
 
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -87,12 +88,6 @@ function getRandom() {
 //   }
 
 const Heatmap = () => {
-    const [isOpen, setIsOpen] = useState(0)
-    const toggleDrawer = () => {
-        setIsOpen((prevState) => !prevState)
-    }
-    const [onselect, setOnselect] = useState({});
-
     const locations = [
         { "name": "jurong west", "position": [1.3435001655425816, 103.70334820770225], "totalrecords": 0 },
         { "name": "boon lay", "position": [1.3132791418613987, 103.70128876968724], "totalrecords": 0 },
@@ -103,12 +98,12 @@ const Heatmap = () => {
         { "name": "bukit batok", "position": [1.3551763704852338, 103.75346119940082], "totalrecords": 0 },
         { "name": "tengah", "position": [1.3620447000702194, 103.72737498454404], "totalrecords": 0 },
         { "name": "choa chu kang", "position": [1.3833363969379069, 103.74590992667913], "totalrecords": 0 },
-        { "name": "bukit panjang", "position": [1.3634183636412216, 103.77062318285925], "totalrecords": 5 },
+        { "name": "bukit panjang", "position": [1.3634183636412216, 103.77062318285925], "totalrecords": 0 },
         { "name": "queenstown", "position": [1.2803103359031265, 103.77748797624263], "totalrecords": 0 },
         { "name": "bukit merah", "position": [1.2739114383233257, 103.82181422395736], "totalrecords": 0 },
         { "name": "tanglin", "position": [1.3082700975171921, 103.81530222083379], "totalrecords": 0 },
         { "name": "newton", "position": [1.308098385759878, 103.83932899767558], "totalrecords": 0 },
-        { "name": "orchard", "position": [1.3035480199139788, 103.83272163404405], "totalrecords": 10 },
+        { "name": "orchard", "position": [1.3035480199139788, 103.83272163404405], "totalrecords": 0 },
         { "name": "river valley", "position": [1.29685124013572, 103.83452364230723], "totalrecords": 0 },
         { "name": "rochor", "position": [1.3037197319821734, 103.85245791502126], "totalrecords": 0 },
         { "name": "outram", "position": [1.2830028508200781, 103.84034567653346], "totalrecords": 0 },
@@ -138,6 +133,37 @@ const Heatmap = () => {
         { "name": "lim chu kang", "position": [1.4315452623513631, 103.7173094181013], "totalrecords": 0 },
         { "name": "seletar", "position": [1.415775838721734, 103.87780550240396], "totalrecords": 0 }
     ]
+
+    const [isOpen, setIsOpen] = useState(0)
+    const [isLoading, setLoading] = useState(true);
+    const [locationValues, setLocationValues] = useState(locations);
+    const toggleDrawer = () => {
+        setIsOpen((prevState) => !prevState)
+    }
+    const [onselect, setOnselect] = useState({});
+
+
+    useEffect(() => {
+        axios({
+            method: 'get',
+            url: 'http://54.255.164.208:5000/recentlysold',
+            withCredentials: false
+        })
+            .then(res => {
+                console.log(res.data);
+                for (let i = 0; i < locations.length; i++) {
+                    var x = locations[i].name.toUpperCase();
+                    if (res.data.town[locations[i].name.toUpperCase()] > 0) {
+                        locations[i].totalrecords = res.data.town[locations[i].name.toUpperCase()]
+                    }
+
+                }
+                setLocationValues(locations);
+                setLoading(false);
+            })
+
+    }, []);
+
     /* function determining what should happen onmouseover, this function updates our state*/
     const highlightFeature = (e => {
         var layer = e.target;
@@ -145,7 +171,7 @@ const Heatmap = () => {
         layer.setStyle({
             weight: 1,
             color: "black",
-            fillOpacity: 1
+            fillOpacity: 0.7
         });
     });
     /*resets our state i.e no properties should be displayed when a feature is not clicked or hovered over */
@@ -164,22 +190,31 @@ const Heatmap = () => {
         });
     }
 
-    const mapPolygonColorToDensity = (density => {
-        return density > 3023
-            ? '#a50f15'
-            : density > 676
-                ? '#de2d26'
-                : density > 428
-                    ? '#fb6a4a'
-                    : density > 236
-                        ? '#fc9272'
-                        : density > 23
-                            ? '#fcbba1'
-                            : '#fee5d9';
+    const mapPolygonColorToDensity = (e => {
+        console.log(e)
+        for (let i = 0; i < locationValues.length; i++) {
+            if (locationValues[i].name.toUpperCase() == e) {
+                let density = locationValues[i].totalrecords;
+                return density > 200
+                    ? '#a50f15'
+                    : density > 100
+                        ? '#de2d26'
+                        : density > 50
+                            ? '#fb6a4a'
+                            : density > 20
+                                ? '#fc9272'
+                                : density > 5
+                                    ? '#fcbba1'
+                                    : '#000000';
+
+            }
+        }
+
     })
+
     const style = (feature => {
         return ({
-            fillColor: mapPolygonColorToDensity(getRandom()),
+            fillColor: mapPolygonColorToDensity(feature.properties.PLN_AREA_N),
             weight: 1,
             opacity: 1,
             color: 'black',
@@ -187,6 +222,7 @@ const Heatmap = () => {
             fillOpacity: 0.5
         });
     });
+
     const mapStyle = {
         height: '100vh',
         width: '85%',
@@ -203,6 +239,9 @@ const Heatmap = () => {
         setIsOpen(true);
 
     }
+    if (isLoading) {
+        return <div className="App">Loading...</div>;
+    }
 
     return (
         <div>
@@ -211,35 +250,27 @@ const Heatmap = () => {
             <div class="heatmap_wrapper">
                 <div class="heatmap_title">Discover Locations</div>
                 <MapContainer zoom={11}
-                    scrollWheelZoom={true}
                     style={mapStyle}
+                    dragging={true}
+                    scrollWheelZoom={false}
                     center={[1.3521, 103.8198]}>
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                    {/* {markers.map((position, idx) => 
-                            <Marker key={`marker-${idx}`} position={position}>
-                            <Popup>
-                                <span>A pretty CSS3 popup. <br/> Easily customizable.</span>
-                            </Popup>
-                            </Marker>
-                            )} */}
-                    {/* <GetCoordinates /> */}
-                    {locations.map((location) => (
+                    {locationValues.map((location) => (
                         location.totalrecords > 0 ?
 
                             <Marker position={location.position}
                                 icon={fetchIcon(
-                                    5,
-                                    20
+                                    location.totalrecords,
+                                    15
                                 )} data={location.name} eventHandlers={{
                                     click: (e) => test(e)
                                 }}>
-                                <Popup>
-                                    {location.name}
-                                </Popup>
-
+                                <Tooltip>
+                                    {location.name.toUpperCase()}
+                                </Tooltip>
                             </Marker> : null
                     ))}
                     {feature && (
