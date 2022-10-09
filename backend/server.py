@@ -16,6 +16,7 @@ from datetime import date
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import requests
+import urllib.request, json
 
 from flask import Flask, request
 
@@ -82,9 +83,11 @@ class Server():
             data = pd.DataFrame([data])
 
             # get lat lon from OneMap API
-            query = requests.get(
-                "https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=N".format(postal_code)
-                ).json()
+            # query = requests.get(
+            #     "https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=N".format(postal_code)
+            #     ).json()
+            query = urllib.request.urlopen("https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=N".format(postal_code))
+            query = json.loads(query.read())
 
             if query["found"] == 0: # unable to find lat lon data from one map api
                 return {
