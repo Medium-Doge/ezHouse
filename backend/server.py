@@ -83,27 +83,27 @@ class Server():
             data = pd.DataFrame([data])
 
             # get lat lon from OneMap API
-            # query = requests.get(
-            #     "https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=N".format(postal_code)
-            #     ).json()
+            query = requests.get(
+                "https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=N".format(postal_code)
+                ).json()
             # query = urllib.request.urlopen("https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=N".format(postal_code))
             # query = json.loads(query.read())
 
-            # if query["found"] == 0: # unable to find lat lon data from one map api
-            #     return {
-            #         "found" : False,
-            #         "predicted_price" : None
-            #     }
-            # else:
-            #     lat = query["results"][0]["LATITUDE"]
-            #     lon = query["results"][0]["LONGITUDE"]
+            if query["found"] == 0: # unable to find lat lon data from one map api
+                return {
+                    "found" : False,
+                    "predicted_price" : None
+                }
+            else:
+                lat = query["results"][0]["LATITUDE"]
+                lon = query["results"][0]["LONGITUDE"]
 
             house_info = hdb_info.loc[hdb_info["postal_code"] == postal_code].iloc[0]
 
             return {
                 "found"                 : True,
-                # "latitude"              : lat,
-                # "longitude"             : lon,
+                "latitude"              : lat,
+                "longitude"             : lon,
                 "predicted_price"       : self.regression_tree.model.predict(data)[0],
                 "blk_no"                : str(house_info["blk_no"]),
                 "street"                : house_info["street"],
