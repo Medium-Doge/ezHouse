@@ -19,6 +19,7 @@ import requests
 import urllib.request, json
 
 from flask import Flask, request
+from flask_cors import CORS
 
 RESALE = "backend/resale.csv"
 HDBINFO = "backend/hdb_info.csv"
@@ -258,7 +259,9 @@ class APIConnector():
 
 def main():
     server = Server(__name__)
+    CORS(server)
     server.app.run("0.0.0.0", port=5000)
+    
     
 if __name__ == "__main__":
     main()
