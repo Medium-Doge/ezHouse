@@ -34,6 +34,7 @@ class Server():
         print("Done")
         print("Initialising API server...")
         self.app = Flask(name)
+        CORS(self.app)
         print("Done")
 
         # === App routes ===
@@ -259,7 +260,6 @@ class APIConnector():
 
 def main():
     server = Server(__name__)
-    CORS(server)
     server.app.run("0.0.0.0", port=5000)
     
     
