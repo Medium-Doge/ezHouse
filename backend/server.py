@@ -16,13 +16,14 @@ from datetime import date
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import requests
-import urllib.request, json
 
 from flask import Flask, request
 from flask_cors import CORS
 
-RESALE = "backend/resale.csv"
-HDBINFO = "backend/hdb_info.csv"
+RESALE = "resale.csv"
+HDBINFO = "hdb_info.csv"
+GOOGLE_API_KEY = "AIzaSyDi6uFfup3Xhc4Y2azQ-VY-rdvridd22B4"
+CX = "57ca1c7140b714b5b"
 
 class Server():
     def __init__(self, name):
@@ -32,6 +33,11 @@ class Server():
         print("Initialising Regression Tree Model...")
         self.regression_tree = RegressionTreeModel()
         print("Done")
+
+        print("Initialising CustomGoogleSearchAPIConnector")
+        self.hdb_image_api = HDBImageSearchAPIConnector(GOOGLE_API_KEY, CX)
+        print("Done")
+
         print("Initialising API server...")
         self.app = Flask(name)
         CORS(self.app)
@@ -88,8 +94,6 @@ class Server():
             query = requests.get(
                 "https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=N".format(postal_code)
                 ).json()
-            # query = urllib.request.urlopen("https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=N".format(postal_code))
-            # query = json.loads(query.read())
 
             if query["found"] == 0: # unable to find lat lon data from one map api
                 return {
@@ -99,6 +103,9 @@ class Server():
             else:
                 lat = query["results"][0]["LATITUDE"]
                 lon = query["results"][0]["LONGITUDE"]
+
+            # get photo from Custom Google Image Search
+
 
             house_info = hdb_info.loc[hdb_info["postal_code"] == postal_code].iloc[0]
 
@@ -131,7 +138,8 @@ class Server():
                 "2room_rental"          : int(house_info["2room_rental"]),
                 "3room_rental"          : int(house_info["3room_rental"]),
                 "other_room_rental"     : int(house_info["other_room_rental"]),
-                "address"               : house_info["Address"]
+                "address"               : house_info["Address"],
+                "image"                 : self.hdb_image_api.getImage(postal_code)
             }
         
         else:
@@ -252,11 +260,32 @@ class RegressionTreeModel():
 
 
 class APIConnector():
-    def __init__(self):
-        pass
+    def __init__(self, api_key):
+        self.API_KEY = api_key
 
     def get():
         pass
+
+class HDBImageSearchAPIConnector(APIConnector):
+    """
+    Uses Custom Google Search API 
+    """
+    def __init__(self, api_key, cx):
+        super().__init__(api_key)
+        self.cx = cx
+    
+    def getImage(self, postal_code):
+        url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&q=Singapore%20{}".format(
+                self.API_KEY, self.cx, postal_code
+            )
+
+        data = requests.get(url).json()
+
+        try:
+            return data["items"][0]["pagemap"]["cse_image"][0]["src"]
+        except:
+            return None
+
 
 def main():
     server = Server(__name__)
