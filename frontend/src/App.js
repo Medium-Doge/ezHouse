@@ -18,8 +18,7 @@ import {
 } from "react-router-dom";
 
 const ROLES = {
-    'Normal': 2001,
-    'User': 5150
+    'User': 2001
 }
 
 function Home() {
@@ -41,13 +40,10 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="linkpage" element={<LinkPage />} />
           <Route path="unauthorized" element={<Unauthorized />} />
-          <Route path="predictPrice" element={<PredictPrice />} />
-          <Route element={<RequireAuth allowedRoles={[ROLES.Normal]} />}>
-              <Route path="index" element={<Home />} />
+          <Route path="index" element={<Home />} />
+          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+              <Route path="predictPrice" element={<PredictPrice />} />
           </Route>
-
-          
-
           {/* catch all */}
           <Route path="*" element={<Missing />} />
       </Routes>

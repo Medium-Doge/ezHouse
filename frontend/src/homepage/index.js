@@ -9,7 +9,7 @@ const Homepage = () => {
 
     let navigate = useNavigate();
     const routeChange = () => {
-        navigate('/unauthorized');
+        navigate('/login');
     }
 
     const townarray = ['ANGMOKIO',
@@ -38,7 +38,7 @@ const Homepage = () => {
         'TOA PAYOH',
         'WOODLANDS',
         'YISHUN'];
-        
+
 
     const [values, setValues] = useState({
         postal_code: '',
@@ -84,7 +84,7 @@ const Homepage = () => {
         navigate('/predictprice', { state : values})
     //     event.preventDefault();
     //     console.log(values);
-    //     axios({method: 'get', 
+    //     axios({method: 'get',
     //     url:'http://54.255.164.208:5000/predict?postal_code=' + values.postal_code + '&town=' + values.town + '&flat_type=' + values.flat_type + '&storey_range=' + values.storey_range,
     //     withCredentials: false})
     //     .then(res => {
