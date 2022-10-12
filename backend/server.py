@@ -69,7 +69,7 @@ class Server():
         def __getImage():
             data = request.get_json(silent=True)
             if data == None:
-                return "Body is not json type", 500
+                return "Body is not json type or Request is not POST", 500
 
             return self.findImage(data)
 
@@ -319,7 +319,7 @@ class HDBImageSearchAPIConnector(APIConnector):
 
 def main():
     server = Server(__name__)
-    server.app.run("0.0.0.0", port=5000)
+    server.app.run("0.0.0.0", port=5000, ssl_context=("cert.pem", "key.pem"))
     
     
 if __name__ == "__main__":
