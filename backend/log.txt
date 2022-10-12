@@ -1,0 +1,23 @@
+nohup: ignoring input
+Initialising Regression Tree Model...
+	└Initialising datasets...
+	└Setting predictors...
+	└Creating model...
+		└Goodness of Fit of Model 	Train Dataset
+		└Regression Accuracy 	: 0.9533074300831383
+		└Goodness of Fit of Model 	Test Dataset
+		└Regression Accuracy 	: 0.816169117018879
+Done
+Initialising CustomGoogleSearchAPIConnector
+Done
+Initialising API server...
+Done
+ * Serving Flask app 'server' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on all addresses (0.0.0.0)
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on https://127.0.0.1:5000
+ * Running on https://172.26.14.34:5000 (Press CTRL+C to quit)
