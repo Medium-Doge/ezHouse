@@ -72,7 +72,7 @@ class Server():
     def hello_world(self):
         return {"test": ["Hello", "World"]}
 
-    def getPrediction(self, postal_code:str, town:str, flat_type:str, storey_range):
+    def getPrediction(self, postal_code:str, town:str, flat_type:str, storey_range:str):
         if postal_code in self.regression_tree.hdb_info["postal_code"].values:
             hdb_info = self.regression_tree.hdb_info
             data = dict(zip(self.regression_tree.predictors, [0] * len(self.regression_tree.predictors)))
@@ -84,9 +84,9 @@ class Server():
                     ]
                     ["year_completed"])) * 12
         
-            data["town_{}".format(town)] = 1
-            data["flat_type_{}".format(flat_type)] = 1
-            data["storey_range_{}".format(storey_range)] = 1
+            data["town_{}".format(town.replace(" ",""))] = 1
+            data["flat_type_{}".format(flat_type.replace(" ",""))] = 1
+            data["storey_range_{}".format(storey_range.replace(" ",""))] = 1
 
             data = pd.DataFrame([data])
 
