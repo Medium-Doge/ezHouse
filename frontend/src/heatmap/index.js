@@ -146,20 +146,20 @@ const Heatmap = () => {
     useEffect(() => {
         axios({
             method: 'get',
-            url: 'http://54.255.164.208:5000/recentlysold',
+            url: 'http://54.255.164.208:5000/categories',
             withCredentials: false
         })
             .then(res => {
                 console.log(res.data);
-                for (let i = 0; i < locations.length; i++) {
-                    var x = locations[i].name.toUpperCase();
-                    if (res.data.town[locations[i].name.toUpperCase()] > 0) {
-                        locations[i].totalrecords = res.data.town[locations[i].name.toUpperCase()]
-                    }
+                // for (let i = 0; i < locations.length; i++) {
+                //     var x = locations[i].name.toUpperCase();
+                //     if (res.data.town[locations[i].name.toUpperCase()] > 0) {
+                //         locations[i].totalrecords = res.data.town[locations[i].name.toUpperCase()]
+                //     }
 
-                }
-                setLocationValues(locations);
-                setLoading(false);
+                // }
+                // setLocationValues(locations);
+                // setLoading(false);
             })
 
     }, []);

@@ -11,8 +11,10 @@ const Homepage = () => {
     const routeChange = () => {
         navigate('/login');
     }
-
-    const townarray = ['ANGMOKIO',
+    const flat_type = ['1 ROOM', '2 ROOM', '3 ROOM', '4 ROOM', '5 ROOM', 'EXECUTIVE', 'MULTI-GENERATION'];
+    const storey_ranges = ['01 TO 03', '04 TO 06', '07 TO 09', '10 TO 12', '13 TO 15', '16 TO 18', '19 TO 21', '22 TO 24', '25 TO 27', '28 TO 30', '31 TO 33', '34 TO 36', '37 TO 39', '40 TO 42', '43 TO 45', '46 TO 48', '49 TO 51']
+    const townarray = 
+    ['ANG MO KIO',
         'BEDOK',
         'BISHAN',
         'BUKIT BATOK',
@@ -38,7 +40,7 @@ const Homepage = () => {
         'TOA PAYOH',
         'WOODLANDS',
         'YISHUN'];
-
+    
 
     const [values, setValues] = useState({
         postal_code: '',
@@ -75,24 +77,14 @@ const Homepage = () => {
         event.persist();
         setValues((values) => ({
             ...values,
-            flat_type: event.target.value,
+            flat_type: event.target.value.trim(),
         }));
     };
 
     const handleSubmit = (event) => {
         console.log(values);
         navigate('/predictprice', { state : values})
-    //     event.preventDefault();
-    //     console.log(values);
-    //     axios({method: 'get',
-    //     url:'http://54.255.164.208:5000/predict?postal_code=' + values.postal_code + '&town=' + values.town + '&flat_type=' + values.flat_type + '&storey_range=' + values.storey_range,
-    //     withCredentials: false})
-    //     .then(res => {
-    //     const persons = res.data;
-    //     console.log("boo");
-    //     console.log(res.data);
-    //     console.log(res);
-    //   })
+   
     }
 
     return (
@@ -109,23 +101,27 @@ const Homepage = () => {
                     <input type="text" class="fontAwesome form_element text" name="postalcode" placeholder="&#xF002; Enter postal code" value={values.postalcode} onChange={handlePostalCodeChange} />
                     <select id="flatstorey" class="form_element select" onChange={handleFlatStoreyChange}>
                         <option value="" disabled selected hidden>FLAT STOREY</option>
-                        <option value="red">Red</option>
-                        <option value="orange">Orange</option>
-                        <option value="10TO12">10TO12</option>
+                        {storey_ranges.map((option, index) => (
+                            <option key={index} value={option.replace(/\s+/g, '')}>
+                                {option}
+                            </option>
+                    ))}
                     </select>
                     <select id="flattype" class="form_element select" onChange={handleTownChange}>
                         <option value="" disabled selected hidden>TOWN</option>
                         {townarray.map((option, index) => (
-                            <option key={index} value={option}>
+                            <option key={index} value={option.replace(/\s+/g, '')}>
                                 {option}
                             </option>
-                        ))}
+                    ))}
                     </select>
                     <select id="flattype" class="form_element select" onChange={handleFlatTypeChange}>
                         <option value="" disabled selected hidden>FLAT TYPE</option>
-                        <option value="red">Red</option>
-                        <option value="orange">Orange</option>
-                        <option value="EXECUTIVE">EXECUTIVE</option>
+                        {flat_type.map((option, index) => (
+                            <option key={index} value={option.replace(/\s+/g, '')}>
+                                {option}
+                            </option>
+                    ))}
                     </select>
                     <div class="homepage_formbuttonwrap form_element">
                         <button class="fontAwesome homepage_formbutton" type="submit" >SEARCH &nbsp;&#xF061;</button>
