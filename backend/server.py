@@ -65,6 +65,14 @@ class Server():
         def __getCategories():
             return self.getCategories()
 
+        @self.app.route("/image", methods=["GET", "POST"])
+        def __getImage():
+            data = request.get_json(silent=True)
+            if data == None:
+                return "Body is not json type", 500
+
+            return self.findImage(data)
+
         @self.app.route("/amenities", methods=["GET"])
         def __getAmenities():
             return self.getAmenities()
@@ -152,10 +160,20 @@ class Server():
         date = format(datetime.now() - relativedelta(months=1), "%Y-%m") + "-01"
         temp_df = self.regression_tree.resale.loc[self.regression_tree.resale["month"] >= date]
         
-        return {
-            "town"      :   temp_df["town"].value_counts().to_dict(),
-            "records"   :   temp_df.to_dict("records")
-        }
+        # return {
+        #     "town"      :   temp_df["town"].value_counts().to_dict(),
+        #     "records"   :   temp_df.to_dict("records")
+        # }
+
+        data = dict()
+        for town in temp_df["town"].unique():
+            town_df = temp_df.loc[temp_df["town"] == town]
+            data[town] = {
+                "records"   : town_df.to_dict("records"),
+                "total"     :   int(town_df["town"].count())
+            }
+
+        return data
 
     def getCategories(self):
         """
@@ -164,10 +182,22 @@ class Server():
         """
         
         return { 
-            "towns" : self.regression_tree.towns, 
-            "flat_types" : self.regression_tree.flat_types, 
+            "towns"         : self.regression_tree.towns, 
+            "flat_types"    : self.regression_tree.flat_types, 
             "storey_ranges" : self.regression_tree.storey_ranges
         }
+
+    def findImage(self, data:dict):
+        if len(data) > 30:
+            return {
+                "Too many postal codes (> 30):" : len(data)
+            }
+
+        images = dict()
+        for postal in data["postalcodes"]:
+            images[postal] = self.hdb_image_api.getImage(postal)
+
+        return images
 
     def getAmenities(self):
         raise NotImplementedError
