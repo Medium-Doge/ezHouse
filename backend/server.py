@@ -7,13 +7,16 @@ pip install scikit-learn
 pip install pandas
 pip install Flask==2.1.2
 pip install werkzeug==2.1.2
+pip install flask-cors
+pip install requests
 """
+
+from typing import Union
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor
-from datetime import date
-from datetime import datetime
+from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 import requests
 
@@ -65,7 +68,7 @@ class Server():
         def __getCategories():
             return self.getCategories()
 
-        @self.app.route("/image", methods=["GET", "POST"])
+        @self.app.route("/image", methods=["POST"])
         def __getImage():
             data = request.get_json(silent=True)
             if data == None:
@@ -159,11 +162,6 @@ class Server():
     def getRecentlySold(self):
         date = format(datetime.now() - relativedelta(months=1), "%Y-%m") + "-01"
         temp_df = self.regression_tree.resale.loc[self.regression_tree.resale["month"] >= date]
-        
-        # return {
-        #     "town"      :   temp_df["town"].value_counts().to_dict(),
-        #     "records"   :   temp_df.to_dict("records")
-        # }
 
         data = dict()
         for town in temp_df["town"].unique():
@@ -189,9 +187,7 @@ class Server():
 
     def findImage(self, data:dict):
         if len(data) > 30:
-            return {
-                "Too many postal codes (> 30):" : len(data)
-            }
+            return "Too many postal codes (> 30): {}".format(len(data)), 500
 
         images = dict()
         for postal in data["postalcodes"]:
@@ -290,10 +286,23 @@ class RegressionTreeModel():
 
 
 class APIConnector():
+    """
+    APIConnector parent class. Create a new API object for a new service.
+    """
     def __init__(self, api_key):
-        self.API_KEY = api_key
+        self._API_KEY = api_key
 
-    def get():
+    def call():
+        """
+        Abstract method meant to be inherited and implemented by child classes. 
+        """
+        raise NotImplementedError("The call() method is not implemented.")
+
+class OneMapAPIConnector(APIConnector):
+    def __init__(self):
+        pass
+
+    def call():
         pass
 
 class HDBImageSearchAPIConnector(APIConnector):
@@ -302,11 +311,11 @@ class HDBImageSearchAPIConnector(APIConnector):
     """
     def __init__(self, api_key, cx):
         super().__init__(api_key)
-        self.cx = cx
+        self.__cx = cx
     
-    def getImage(self, postal_code):
+    def getImage(self, postal_code:Union[str, int]) -> Union[dict, None]:
         url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&q=Singapore%20{}".format(
-                self.API_KEY, self.cx, postal_code
+                self._API_KEY, self.__cx, postal_code
             )
 
         data = requests.get(url).json()
@@ -319,9 +328,8 @@ class HDBImageSearchAPIConnector(APIConnector):
 
 def main():
     server = Server(__name__)
-    # server.app.run("0.0.0.0", port=5000, ssl_context=("cert.pem", "key.pem"))
-    server.app.run("0.0.0.0", port=5000)
-    
+    server.app.run("0.0.0.0", port=5000, ssl_context=("cert.pem", "key.pem"))
+    # server.app.run("0.0.0.0", port=5000)
     
 if __name__ == "__main__":
     main()
