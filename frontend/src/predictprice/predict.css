@@ -3,9 +3,20 @@
     width: '40%';
     margin: '0';
 }
+.predictprice_title {
+    font-size: 26px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #4A73A1;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid gray;
+}
 
 .predictprice_wrapper {
     display: flex;
+    margin-left: 10px;
+    
 }
 
 .predictprice_textwrapper {
@@ -18,4 +29,38 @@
     width: 50%;
     margin: 0;
     display: inline-block;
+}
+
+.predictprice_imgwrap {
+    display: flex;
+}
+
+.predictprice_img {
+    width: 45%;
+}
+
+.predictprice_predicttextwrap {
+    display: inline-block;
+    width: 45%;
+    margin-left: 10px;
+}
+.predictprice_predicttext {
+    margin-top: 0;
+    
+}
+.predictprice_predicttext_label {
+    color: #4A73A1;
+    margin: 0;
+    padding: 0;
+}
+
+.predictprice_hdbinfowrap {
+    margin: 10px 0 0 10px;
+}
+
+.predictprice_amenitiestext {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #4A73A1;
 }

@@ -31,3 +31,26 @@
 .leaflet-container {
     z-index: 0;
 }
+
+.drawer_titlewrap {
+    margin-left: 10px;
+}
+.drawer_title {
+    color: #4A73A1;
+    font-size: 24px;
+    weight: 600;
+}
+
+.drawer_bodywrap {
+    display: flex;
+    margin: 10px 10px;
+}
+.drawer_img {
+    width: 40%;
+    height: 100%;
+}
+
+.drawer_bodytextwrap {
+    margin-left: 10px;
+    display: inline-block;
+}

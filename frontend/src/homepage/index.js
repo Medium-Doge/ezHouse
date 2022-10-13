@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import triangle from './triangle.svg';
 import background from './background.svg';
 import { useNavigate } from "react-router-dom";
@@ -11,37 +11,27 @@ const Homepage = () => {
     const routeChange = () => {
         navigate('/login');
     }
-    const flat_type = ['1 ROOM', '2 ROOM', '3 ROOM', '4 ROOM', '5 ROOM', 'EXECUTIVE', 'MULTI-GENERATION'];
-    const storey_ranges = ['01 TO 03', '04 TO 06', '07 TO 09', '10 TO 12', '13 TO 15', '16 TO 18', '19 TO 21', '22 TO 24', '25 TO 27', '28 TO 30', '31 TO 33', '34 TO 36', '37 TO 39', '40 TO 42', '43 TO 45', '46 TO 48', '49 TO 51']
-    const townarray = 
-    ['ANG MO KIO',
-        'BEDOK',
-        'BISHAN',
-        'BUKIT BATOK',
-        'BUKIT MERAH',
-        'BUKIT PANJANG',
-        'BUKIT TIMAH',
-        'CENTRAL AREA',
-        'CHOA CHU KANG',
-        'CLEMENTI',
-        'GEYLANG',
-        'HOUGANG',
-        'JURONG EAST',
-        'JURONG WEST',
-        'KALLANG/WHAMPOA',
-        'MARINE PARADE',
-        'PASIR RIS',
-        'PUNGGOL',
-        'QUEENSTOWN',
-        'SEMBAWANG',
-        'SENGKANG',
-        'SERANGOON',
-        'TAMPINES',
-        'TOA PAYOH',
-        'WOODLANDS',
-        'YISHUN'];
-    
 
+
+    const [flat_type, setFlatType] = useState([])
+    const [storey_ranges, setStoreyRange] = useState([])
+    const [towns, setTowns] = useState([])
+
+
+    useEffect(() => {
+
+        axios({
+            method: 'get', 
+            url:'http://54.255.164.208:5000/categories'})
+            .then(res => {
+            console.log(res.data);
+            setTowns(res.data.towns);
+            setFlatType(res.data.flat_types);
+            setStoreyRange(res.data.storey_ranges);
+          })
+    
+    }, []);
+        
     const [values, setValues] = useState({
         postal_code: '',
         storey_range: '',
@@ -109,7 +99,7 @@ const Homepage = () => {
                     </select>
                     <select id="flattype" class="form_element select" onChange={handleTownChange}>
                         <option value="" disabled selected hidden>TOWN</option>
-                        {townarray.map((option, index) => (
+                        {towns.map((option, index) => (
                             <option key={index} value={option.replace(/\s+/g, '')}>
                                 {option}
                             </option>
