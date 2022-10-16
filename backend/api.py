@@ -59,13 +59,14 @@ class AmenitiesSearch(APIConnector):
         self.__types = {
             "food"      : ["restaurant"], 
             "transport" : ["subway_station"], 
-            "leisure"   : ["shopping_mall", "library"],
-            "education" : ["school"]
+            "leisure"   : ["shopping_mall"],
+            "education" : ["primary_school", "secondary_school", "university"]
         }
         self.__radius = 1500
         self.__url = \
         "https://maps.googleapis.com/maps/api/place/nearbysearch/json?type={type}&location={location}&radius={radius}&key={api_key}"
         self.__image_url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth={width}&photo_reference={image_ref}&key={api_key}"
+        self.__max_results = 2
 
     def call(self, coord:list) -> Union[dict, None]:
         """
@@ -105,16 +106,16 @@ class AmenitiesSearch(APIConnector):
 
                         data[key].append({
                             "name"      : result["name"],
-                            "location"  : {
-                                "lat" : result["geometry"]["location"]["lat"],
-                                "lon" : result["geometry"]["location"]["lng"]
-                                },
-                            "image" : image
+                            "location"  :   {
+                                            "lat" : result["geometry"]["location"]["lat"],
+                                            "lon" : result["geometry"]["location"]["lng"]
+                                            },
+                            "image"     : image
                         })
 
                         count += 1
 
-                        if count == 3: # only want top 3 result
+                        if count == self.__max_results:
                             break
 
                 else:
