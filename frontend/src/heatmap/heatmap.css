@@ -77,3 +77,11 @@
     opacity: 0.4;
     z-index: 100;
 }
+
+.loader {
+    display: block;
+    margin: 0 auto;
+         position: fixed;
+        top: 40%;
+        left: 45%;
+ }

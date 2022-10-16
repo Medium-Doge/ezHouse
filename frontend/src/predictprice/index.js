@@ -5,7 +5,7 @@ import axios from 'axios';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, GeoJSON, TileLayer, Marker, Popup, useMapEvents, useMap, Tooltip, Circle } from 'react-leaflet';
 import L from 'leaflet';
-
+import Loader from "react-spinners/ClipLoader";
 
 
 function ChangeView({ center, zoom }) {
@@ -26,13 +26,14 @@ var greenIcon = new L.Icon({
 
 
 const PredictPrice = () => {
+  let [loading, setLoading] = useState(false);
   const { state } = useLocation();
   var backendData = { latitude: 1.3435001655425816, longitude: 103.70334820770225 };
   const [data, setData] = useState(backendData);
   const [amenities, setAmenities] = useState([]);
   var test = [1.3435001655425816, 103.70334820770225]
   const [position, setPosition] = useState(test)
-  const [markers, setMarkers] = useState([{"name": "test", "position": [1.3654149, 103.8506386]}]);
+  const [markers, setMarkers] = useState([{ "name": "test", "position": [1.3654149, 103.8506386] }]);
 
   useEffect(() => {
 
@@ -59,7 +60,7 @@ const PredictPrice = () => {
           console.log(error.response.headers);
         }
       })
-
+      setLoading(true);
     axios({
       method: 'get',
       url: 'http://13.228.217.57:5000/amenities?postal_code=' + state.postal_code
@@ -69,11 +70,13 @@ const PredictPrice = () => {
         setAmenities(res.data.education);
         let markerObj = [{}];
         for (let i = 0; i < res.data.education.length; i++) {
-          markerObj[i] = {"name": res.data.education[i].name, "position": [res.data.education[i].location.lat, res.data.education[i].location.lon]}
+          markerObj[i] = { "name": res.data.education[i].name, "position": [res.data.education[i].location.lat, res.data.education[i].location.lon] }
         }
         setMarkers(markerObj);
         console.log(markerObj);
         console.log(amenities);
+      setLoading(false);
+
       })
       .catch(function (error) {
         if (error.response) {
@@ -90,13 +93,13 @@ const PredictPrice = () => {
   function LocationMarkers() {
     const map = useMapEvents({
     });
-  
+
     return (
       <React.Fragment>
-        {markers.map(marker => 
-        <Marker position={marker.position} icon={greenIcon} >
-          <Tooltip>{marker.name}</Tooltip>
-        </Marker>)}
+        {markers.map(marker =>
+          <Marker position={marker.position} icon={greenIcon} >
+            <Tooltip>{marker.name}</Tooltip>
+          </Marker>)}
       </React.Fragment>
     );
   }
@@ -108,6 +111,11 @@ const PredictPrice = () => {
   }
   return (
     <>
+                {
+                loading &&
+                <div id="loadingOverlay" class="loadingOverlay pageOverlay"></div>
+
+            }
       <div class="predictprice_title">
         ezHouse
       </div>
@@ -130,19 +138,19 @@ const PredictPrice = () => {
             <div class="predictprice_amenitiestext">Amenities</div>
             <div class="predictprice_amenitiescontentwrap">
               {
-                
-                  amenities.map((oneAmenities) => (
-                    amenities.length > 0 ?
-                        <div class="predictprice_oneAmenities">
-                        <img class="predictprice_oneAmenitiesImg" src={oneAmenities.image == null ? "https://via.placeholder.com/150" : oneAmenities.image}></img>
-                        <div class="predictprice_oneAmenitiesTextWrap">
-                          <div class="predictprice_oneAmenitiesTitle">{oneAmenities.name}</div>
-                          <div class="predictprice_oneAmenitiesAddress">ADDRESS DASDADASDASDAS</div>
-                        </div>
+
+                amenities.map((oneAmenities) => (
+                  amenities.length > 0 ?
+                    <div class="predictprice_oneAmenities">
+                      <img class="predictprice_oneAmenitiesImg" src={oneAmenities.image == null ? "https://via.placeholder.com/150" : oneAmenities.image}></img>
+                      <div class="predictprice_oneAmenitiesTextWrap">
+                        <div class="predictprice_oneAmenitiesTitle">{oneAmenities.name}</div>
+                        <div class="predictprice_oneAmenitiesAddress">ADDRESS DASDADASDASDAS</div>
                       </div>
-                       : null
-                  ))
-                
+                    </div>
+                    : null
+                ))
+
               }
 
             </div>
@@ -168,7 +176,16 @@ const PredictPrice = () => {
             <LocationMarkers></LocationMarkers>
             <Marker position={position}></Marker>
           </MapContainer>
-        </div></div>
+        </div>
+        <Loader
+                    color={"#36d7b7"}
+                    loading={loading}
+                    className="loader"
+                    size={150}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                />
+        </div>
     </>
   )
 }

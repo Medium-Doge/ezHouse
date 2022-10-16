@@ -131,7 +131,7 @@ const Heatmap = () => {
     ]
 
     const [isOpen, setIsOpen] = useState(0)
-    let [loading, setLoading] = useState(true);
+    let [loading, setLoading] = useState(false);
     const [locationValues, setLocationValues] = useState(locations);
     const [drawerTitle, setDrawerTitle] = useState("");
     const [drawerRecords, setDrawerRecords] = useState([]);
@@ -212,13 +212,7 @@ const Heatmap = () => {
         }
 
     })
-    const override = {
-        display: "block",
-        margin: "0 auto",
-        position: "fixed",
-        top: "40%",
-        left: "45%"
-    }
+
     const style = (feature => {
         return ({
             fillColor: mapPolygonColorToDensity(feature.properties.PLN_AREA_N),
@@ -295,7 +289,6 @@ const Heatmap = () => {
             {
                 loading &&
                 <div id="loadingOverlay" class="loadingOverlay pageOverlay"></div>
-
             }
             <div class="emptyspace">
             </div>
@@ -370,7 +363,7 @@ const Heatmap = () => {
                 <Loader
                     color={"#36d7b7"}
                     loading={loading}
-                    cssOverride={override}
+                    className="loader"
                     size={150}
                     aria-label="Loading Spinner"
                     data-testid="loader"

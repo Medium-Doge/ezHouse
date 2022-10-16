@@ -88,3 +88,11 @@
 .predictprice_oneAmenitiesTitle {
     padding-bottom: 20px;
 }
+
+.loader {
+    display: "block";
+    margin: "0 auto";
+         position: "fixed";
+        top: "40%";
+        left: "45%";
+ }
