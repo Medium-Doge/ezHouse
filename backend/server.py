@@ -153,11 +153,12 @@ class Server():
         for town in recent["town"].unique():
             town_df = recent.loc[recent["town"] == town]
             data[town] = {
-                "records"   : town_df.to_dict("records"),
+                "records"   : town_df.to_dict("records"), 
                 "total"     :   int(town_df["town"].count())
             }
 
         return data
+
 
     def getCategories(self) -> dict:
         """
@@ -182,6 +183,8 @@ class Server():
 
     def getAmenities(self, postal_code:str):
         one_map_data = self.one_map_api.call(postal_code)
+
+
         lat = one_map_data["results"][0]["LATITUDE"]
         lon = one_map_data["results"][0]["LONGITUDE"]
 
