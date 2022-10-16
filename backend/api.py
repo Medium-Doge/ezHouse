@@ -52,3 +52,72 @@ class HDBImageSearch(APIConnector):
             return data["items"][0]["pagemap"]["cse_image"][0]["src"]
         except:
             return None
+
+class AmenitiesSearch(APIConnector):
+    def __init__(self, api_key):
+        super().__init__(api_key)
+        self.__types = {
+            "food"      : ["restaurant"], 
+            "transport" : ["subway_station"], 
+            "leisure"   : ["shopping_mall", "library"],
+            "education" : ["school"]
+        }
+        self.__radius = 1500
+        self.__url = \
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?type={type}&location={location}&radius={radius}&key={api_key}"
+        self.__image_url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth={width}&photo_reference={image_ref}&key={api_key}"
+
+    def call(self, coord:list) -> Union[dict, None]:
+        """
+        Args:
+            coord (list) : [<latitude>,<longitude>]
+        
+        """
+        data = {
+            "food"      : [],
+            "transport" : [],
+            "leisure"   : [],
+            "education" : []
+        }
+
+        for key, value in self.__types.items():
+            for type_ in value:
+                url = self.__url.format(
+                    type = type_,
+                    location = ",".join(coord),
+                    radius = self.__radius,
+                    api_key = self._API_KEY
+                )
+                temp = requests.get(url).json()
+
+                if temp["status"] == "OK":
+                    count = 0
+
+                    for result in temp["results"]:
+                        try:
+                            image = requests.get(self.__image_url.format(
+                                        width = 400,
+                                        image_ref = result["photos"][0]["photo_reference"],
+                                        api_key = self._API_KEY)).url
+                        except KeyError:
+                            image = None
+
+
+                        data[key].append({
+                            "name"      : result["name"],
+                            "location"  : {
+                                "lat" : result["geometry"]["location"]["lat"],
+                                "lon" : result["geometry"]["location"]["lng"]
+                                },
+                            "image" : image
+                        })
+
+                        count += 1
+
+                        if count == 3: # only want top 3 result
+                            break
+
+                else:
+                    data[key] = None
+
+        return data

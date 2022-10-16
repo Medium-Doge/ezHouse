@@ -9,11 +9,8 @@ pip install werkzeug==2.1.2
 pip install flask-cors
 """
 # self created libraries
-from api import HDBImageSearch, OneMapSearch
+from api import HDBImageSearch, OneMapSearch, AmenitiesSearch
 from model import RegressionTreeModel
-
-from datetime import date, datetime
-from dateutil.relativedelta import relativedelta
 
 from flask import Flask, request
 from flask_cors import CORS
@@ -35,6 +32,10 @@ class Server():
 
         print("Initialising HDBImageSearch API...")
         self.hdb_image_api = HDBImageSearch(GOOGLE_API_KEY, CX)
+        print("Done.")
+
+        print("Initialising AmenitiesSearch API...")
+        self.amenities_api = AmenitiesSearch(GOOGLE_API_KEY)
         print("Done.")
 
         print("Initialising OneMapSearch API...")
@@ -78,7 +79,8 @@ class Server():
 
         @self.app.route("/amenities", methods=["GET"])
         def __getAmenities():
-            return self.getAmenities()
+            postal_code = request.args.get("postal_code")
+            return self.getAmenities(postal_code)
             
     def hello_world(self):
         return {"test": ["Hello", "World"]}
@@ -178,8 +180,13 @@ class Server():
 
         return images
 
-    def getAmenities(self):
-        raise NotImplementedError
+    def getAmenities(self, postal_code:str):
+        one_map_data = self.one_map_api.call(postal_code)
+        lat = one_map_data["results"][0]["LATITUDE"]
+        lon = one_map_data["results"][0]["LONGITUDE"]
+
+        return self.amenities_api.call([lat,lon])
+
 
 def main():
     server = Server(__name__)
