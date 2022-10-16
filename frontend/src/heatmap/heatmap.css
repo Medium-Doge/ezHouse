@@ -2,6 +2,9 @@
     height: 400px;
 
 }
+.heatmap_wrapper {
+    position: relative;
+}
 
 .heatmap_title {
     font-size: 26px;
@@ -31,7 +34,10 @@
 .leaflet-container {
     z-index: 0;
 }
-
+.drawer_wrap {
+    overflow-y: scroll;
+    height: 100vh;
+}
 .drawer_titlewrap {
     margin-left: 10px;
 }
@@ -44,6 +50,7 @@
 .drawer_bodywrap {
     display: flex;
     margin: 10px 10px;
+
 }
 .drawer_img {
     width: 40%;
@@ -53,4 +60,20 @@
 .drawer_bodytextwrap {
     margin-left: 10px;
     display: inline-block;
+}
+
+.pageOverlay {
+    top: 0;
+    left: 0;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    z-index: 1001;
+    display: block;
+}
+
+#loadingOverlay {
+    background-color: rgb(0, 0, 0);
+    opacity: 0.4;
+    z-index: 100;
 }

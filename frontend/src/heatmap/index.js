@@ -7,7 +7,7 @@ import L from 'leaflet';
 import Drawer from 'react-modern-drawer'
 import 'react-modern-drawer/dist/index.css'
 import axios from 'axios';
-
+import Loader from "react-spinners/ClipLoader";
 delete L.Icon.Default.prototype._getIconUrl;
 
 L.Icon.Default.mergeOptions({
@@ -15,6 +15,7 @@ L.Icon.Default.mergeOptions({
     iconUrl: require('leaflet/dist/images/marker-icon.png'),
     shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 });
+
 
 
 const icons = {};
@@ -28,13 +29,6 @@ const fetchIcon = (count, size) => {
     }
     return icons[count];
 };
-
-function getRandom() {
-    const min = 0;
-    const max = 3500;
-    const rand = min + Math.random() * (max - min);
-    return rand;
-}
 
 // function MyComponent() {
 //     const [position, setPosition] = useState(null)
@@ -89,6 +83,7 @@ const GetCoordinates = () => {
 }
 
 const Heatmap = () => {
+
     const locations = [
         { "name": "jurong west", "position": [1.3435001655425816, 103.70334820770225], "totalrecords": 0, "records": [] },
         { "name": "boon lay", "position": [1.3132791418613987, 103.70128876968724], "totalrecords": 0, "records": [] },
@@ -136,7 +131,7 @@ const Heatmap = () => {
     ]
 
     const [isOpen, setIsOpen] = useState(0)
-    const [isLoading, setLoading] = useState(true);
+    let [loading, setLoading] = useState(true);
     const [locationValues, setLocationValues] = useState(locations);
     const [drawerTitle, setDrawerTitle] = useState("");
     const [drawerRecords, setDrawerRecords] = useState([]);
@@ -149,10 +144,10 @@ const Heatmap = () => {
 
 
     useEffect(() => {
+        setLoading(true);
         axios({
             method: 'get',
-            url: 'http://54.255.164.208:5000/recentlysold',
-            withCredentials: false
+            url: 'http://13.228.217.57:5000/recentlysold'
         })
             .then(res => {
                 const x = res.data;
@@ -217,7 +212,13 @@ const Heatmap = () => {
         }
 
     })
-
+    const override = {
+        display: "block",
+        margin: "0 auto",
+        position: "fixed",
+        top: "40%",
+        left: "45%"
+    }
     const style = (feature => {
         return ({
             fillColor: mapPolygonColorToDensity(feature.properties.PLN_AREA_N),
@@ -238,34 +239,68 @@ const Heatmap = () => {
         return (feature);
     });
 
-    
-    function test(e) {
+
+    function openDrawer(e) {
+        let index = 0;
+        setLoading(true);
         var clickedname = e.target.options.data;
         for (let i = 0; i < locationValues.length; i++) {
-            if (locationValues[i].name == clickedname) {
-                setDrawerTitle(locationValues[i].name.charAt(0).toUpperCase() + locationValues[i].name.slice(1));
-                setDrawerTotal(locationValues[i].totalrecords);
-                setDrawerRecords(locationValues[i].records);
+            let oneLocation = locationValues[i];
+            if (oneLocation.name == clickedname) {
+                console.log(locationValues[i])
+
+                setDrawerTitle(oneLocation.name.charAt(0).toUpperCase() + oneLocation.name.slice(1));
+                setDrawerTotal(oneLocation.totalrecords);
+                setDrawerRecords(oneLocation.records);
                 var total = 0;
-                for (let j =0; j < locationValues[i].records.length;j++) {
-                    total += locationValues[i].records[j].resale_price;
-                }            
-                setDrawerAvgPrice((total/locationValues[i].totalrecords).toPrecision(1));
+                index = i;
+                for (let j = 0; j < oneLocation.records.length; j++) {
+                    total += oneLocation.records[j].resale_price;
+                }
+                setDrawerAvgPrice((total / oneLocation.totalrecords).toLocaleString());
                 break;
             }
         }
-        setIsOpen(true);
+        let postalcodesArray = [];
+        for (let x = 0; x < locationValues[index].records.length; x++) {
+            postalcodesArray[x] = String(locationValues[index].records[x].postal_code);
+            if (x == 29) break; //limit to 30 
+        }
+        console.log(postalcodesArray);
+        axios({
+            method: 'post',
+            url: 'http://13.228.217.57:5000/image',
+            data: { "postalcodes": postalcodesArray }
+        })
+            .then(res => {
+                Object.keys(res.data).forEach(function (key, i) {
+                    for (let x = 0; x < locationValues[index].records.length; x++) {
+                        if (locationValues[index].records[x].postal_code == key) {
+                            locationValues[index].records[x].img = res.data[key];
+                        }
+                    }
+                })
+                setDrawerRecords(locationValues[index].records);
+                setIsOpen(true);
+                setLoading(false);
+
+            })
+
+
+
 
     }
-    if (isLoading) {
-        return <div className="App">Loading...</div>;
-    }
-
     return (
         <div>
+            {
+                loading &&
+                <div id="loadingOverlay" class="loadingOverlay pageOverlay"></div>
+
+            }
             <div class="emptyspace">
             </div>
             <div class="heatmap_wrapper">
+
                 <div class="heatmap_title">Discover Locations</div>
                 <MapContainer zoom={11}
                     style={mapStyle}
@@ -284,7 +319,7 @@ const Heatmap = () => {
                                     location.totalrecords,
                                     15
                                 )} data={location.name} eventHandlers={{
-                                    click: (e) => test(e)
+                                    click: (e) => openDrawer(e)
                                 }}>
                                 <Tooltip>
                                     {location.name.toUpperCase()}
@@ -298,6 +333,7 @@ const Heatmap = () => {
                     )}
                     {/* <GetCoordinates></GetCoordinates> */}
                 </MapContainer>
+
                 <Drawer
                     open={isOpen}
                     onClose={toggleDrawer}
@@ -307,20 +343,20 @@ const Heatmap = () => {
                 >
                     <div class="drawer_wrap">
 
-                    <div class="drawer_titlewrap">
-                        <div class="drawer_title">{drawerTitle}</div>
-                        <div>{drawerTotal} Houses found in this estate.</div>
-                        <div>Average price of the region is {drawerAvgPrice}</div>
-                    </div>
+                        <div class="drawer_titlewrap">
+                            <div class="drawer_title">{drawerTitle}</div>
+                            <div>{drawerTotal} Houses found in this estate.</div>
+                            <div>Average price of the region is <span style={{ fontWeight: "bold" }}>${drawerAvgPrice}</span></div>
+                        </div>
                         {
                             drawerRecords.map((record, index) => (
                                 <div class="drawer_bodywrap">
-                                    <img class="drawer_img" src="https://via.placeholder.com/150"></img>
+                                    <img class="drawer_img" style={{ width: "150px", height: "150px" }} src={record.img}></img>
                                     <div class="drawer_bodytextwrap">
                                         <div>
                                             House {index + 1}
                                         </div>
-                                        <div>Price: <br/>${record.resale_price}.00</div>
+                                        <div>Price: <br />${record.resale_price.toLocaleString()}.00</div>
                                     </div>
                                 </div>
 
@@ -331,6 +367,14 @@ const Heatmap = () => {
 
 
                 </Drawer>
+                <Loader
+                    color={"#36d7b7"}
+                    loading={loading}
+                    cssOverride={override}
+                    size={150}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                />
             </div>
 
             <div class="emptyspace">

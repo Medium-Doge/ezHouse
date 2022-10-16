@@ -25,7 +25,7 @@ const PredictPrice = () => {
     console.log(state)
     axios({
       method: 'get',
-      url: 'http://54.255.164.208:5000/predict?postal_code=' + state.postal_code + '&town=' + state.town + '&flat_type=' + state.flat_type + '&storey_range=' + state.storey_range,
+      url: 'http://13.228.217.57:5000/predict?postal_code=' + state.postal_code + '&town=' + state.town + '&flat_type=' + state.flat_type + '&storey_range=' + state.storey_range,
       withCredentials: false
     })
       .then(res => {
@@ -57,7 +57,7 @@ const PredictPrice = () => {
             <img class="predictprice_img" src={data.image}></img>
             <div class="predictprice_predicttextwrap">
               <p class="predictprice_predicttext_label">PREDICTED PRICE</p>
-              <h1 class="predictprice_predicttext">${data.predicted_price}.00</h1>
+              <h1 class="predictprice_predicttext">${data.predicted_price.toLocaleString()}.00</h1>
             </div>
           </div>
           <div class="predictprice_hdbinfowrap">
