@@ -62,11 +62,10 @@ class AmenitiesSearch(APIConnector):
             "leisure"   : ["shopping_mall"],
             "education" : ["primary_school", "secondary_school", "university"]
         }
-        self.__radius = 1500
-        self.__url = \
-        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?type={type}&location={location}&radius={radius}&key={api_key}"
+        self.__radius = 1000 # radius to search for places (in metres)
+        self.__max_results = 2 # maximum results to return from subcategories (see self.__types)
+        self.__url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?type={type}&location={location}&radius={radius}&key={api_key}"
         self.__image_url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth={width}&photo_reference={image_ref}&key={api_key}"
-        self.__max_results = 2
 
     def call(self, coord:list) -> dict:
         """
@@ -101,9 +100,8 @@ class AmenitiesSearch(APIConnector):
                                         width = 400,
                                         image_ref = result["photos"][0]["photo_reference"],
                                         api_key = self._API_KEY)).url
-                        except KeyError:
+                        except KeyError: # image could not be found
                             image = None
-
 
                         data[key].append({
                             "name"      : result["name"],

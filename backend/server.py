@@ -47,7 +47,8 @@ class Server():
         CORS(self.app)
         print("Done.")
 
-        # === App routes ===
+        # === START OF FLASK API ROUTES ===
+        
         @self.app.route("/hello")
         def __hello_world():
             return self.hello_world()
@@ -81,6 +82,8 @@ class Server():
         def __getAmenities():
             postal_code = request.args.get("postal_code")
             return self.getAmenities(postal_code)
+
+        # === END OF FLASK API ROUTES ===
             
     def hello_world(self):
         return {"test": ["Hello", "World"]}
