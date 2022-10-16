@@ -184,6 +184,9 @@ class Server():
     def getAmenities(self, postal_code:str):
         one_map_data = self.one_map_api.call(postal_code)
 
+        if one_map_data["found"] == False or postal_code not in self.regression_tree.getAllPostalCodes():
+            return {"found" : False}
+
 
         lat = one_map_data["results"][0]["LATITUDE"]
         lon = one_map_data["results"][0]["LONGITUDE"]

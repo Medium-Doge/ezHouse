@@ -75,6 +75,7 @@ class AmenitiesSearch(APIConnector):
         
         """
         data = {
+            "found"     : True,
             "food"      : [],
             "transport" : [],
             "leisure"   : [],
