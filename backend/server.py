@@ -171,28 +171,33 @@ class Server():
             "storey_ranges" : self.regression_tree.getStoreyRanges()
         }
 
-    def getImage(self, data:dict):
+    def getImage(self, data:dict) -> dict:
         if len(data) > 30:
-            return "Too many postal codes (> 30): {}".format(len(data)), 500
+            return {
+                "status" : "BAD", 
+                "message" : "Too many requests (> 30)"
+            }
 
         images = dict()
+        images["status"] = "OK"
         for postal in data["postalcodes"]:
             images[postal] = self.hdb_image_api.call(postal)
 
         return images
 
-    def getAmenities(self, postal_code:str):
+    def getAmenities(self, postal_code:str) -> dict:
         one_map_data = self.one_map_api.call(postal_code)
 
         if one_map_data["found"] == False or postal_code not in self.regression_tree.getAllPostalCodes():
-            return {"found" : False}
-
+            return {
+                "found" : False, 
+                "message" : "Postal code is not a valid HDB postal code"
+            }
 
         lat = one_map_data["results"][0]["LATITUDE"]
         lon = one_map_data["results"][0]["LONGITUDE"]
 
         return self.amenities_api.call([lat,lon])
-
 
 def main():
     server = Server(__name__)

@@ -68,7 +68,7 @@ class AmenitiesSearch(APIConnector):
         self.__image_url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth={width}&photo_reference={image_ref}&key={api_key}"
         self.__max_results = 2
 
-    def call(self, coord:list) -> Union[dict, None]:
+    def call(self, coord:list) -> dict:
         """
         Args:
             coord (list) : [<latitude>,<longitude>]
