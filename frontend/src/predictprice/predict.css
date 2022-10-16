@@ -64,3 +64,27 @@
     margin-bottom: 10px;
     color: #4A73A1;
 }
+.predictprice_amenitiescontentwrap {
+    max-height: 400px;
+    overflow-y: scroll;
+}
+.predictprice_oneAmenities {
+    display: flex;
+    align-items: center;
+    margin: 20px 10px;
+    padding: 5px;
+    border: 1px solid black;
+    
+}
+.predictprice_oneAmenitiesImg {
+    width: 150px;
+    height: 150px;
+}
+.predictprice_oneAmenitiesTextWrap {
+    display: inline-block;
+    width: 100%;
+    margin-left: 10px;
+}
+.predictprice_oneAmenitiesTitle {
+    padding-bottom: 20px;
+}
