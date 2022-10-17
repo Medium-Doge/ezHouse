@@ -43,10 +43,11 @@ function App() {
           <Route path="index" element={<Home />} />
           <Route path="predictPrice" element={<PredictPrice />} />
 
-          {/* <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+          {/*<Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
               <Route path="predictPrice" element={<PredictPrice />} />
-          </Route> */}
-          {/* catch all */}
+          </Route>
+          {/* catch all */}*/}
+
           <Route path="*" element={<Missing />} />
       </Routes>
       </BrowserRouter>

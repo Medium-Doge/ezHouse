@@ -49,38 +49,39 @@ const fetchIcon = (count, size) => {
 //     )
 //   }
 
-const GetCoordinates = () => {
-    const map = useMap();
-    // const https = require('node:https');
 
-    useEffect(() => {
-        if (!map) return;
-        const info = L.DomUtil.create('div', 'legend');
-
-        const positon = L.Control.extend({
-            options: {
-                position: 'bottomleft'
-            },
-
-            onAdd: function () {
-                info.textContent = 'Click on map';
-                return info;
-            }
-        })
-
-        map.on('click', (e) => {
-            console.log(e.latlng)
-            info.textContent = e.latlng;
-        })
-
-        map.addControl(new positon());
-
-    }, [map])
-
-
-    return null
-
-}
+// const GetCoordinates = () => {
+//     const map = useMap();
+//     // const https = require('node:https');
+//
+//     useEffect(() => {
+//         if (!map) return;
+//         const info = L.DomUtil.create('div', 'legend');
+//
+//         const positon = L.Control.extend({
+//             options: {
+//                 position: 'bottomleft'
+//             },
+//
+//             onAdd: function () {
+//                 info.textContent = 'Click on map';
+//                 return info;
+//             }
+//         })
+//
+//         map.on('click', (e) => {
+//             console.log(e.latlng)
+//             info.textContent = e.latlng;
+//         })
+//
+//         map.addControl(new positon());
+//
+//     }, [map])
+//
+//
+//     return null
+//
+// }
 
 const Heatmap = () => {
 
@@ -258,7 +259,7 @@ const Heatmap = () => {
         let postalcodesArray = [];
         for (let x = 0; x < locationValues[index].records.length; x++) {
             postalcodesArray[x] = String(locationValues[index].records[x].postal_code);
-            if (x == 29) break; //limit to 30 
+            if (x == 29) break; //limit to 30
         }
         console.log(postalcodesArray);
         axios({

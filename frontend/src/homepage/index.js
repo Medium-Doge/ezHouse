@@ -7,9 +7,13 @@ import axios from 'axios';
 
 const Homepage = () => {
 
-    let navigate = useNavigate();
-    const routeChange = () => {
-        navigate('/login');
+    const navigate = useNavigate();
+
+    const predictPrice = async () => {
+        // if used in more components, this should be in context
+        // axios to /logout endpoint
+        setAuth({});
+        navigate('/predictPrice');
     }
 
 
@@ -21,7 +25,7 @@ const Homepage = () => {
     useEffect(() => {
 
         axios({
-            method: 'get', 
+            method: 'get',
             url:'http://13.228.217.57:5000/categories'})
             .then(res => {
             console.log(res.data);
@@ -29,9 +33,9 @@ const Homepage = () => {
             setFlatType(res.data.flat_types);
             setStoreyRange(res.data.storey_ranges);
           })
-    
+
     }, []);
-        
+
     const [values, setValues] = useState({
         postal_code: '',
         storey_range: '',
@@ -74,7 +78,7 @@ const Homepage = () => {
     const handleSubmit = (event) => {
         console.log(values);
         navigate('/predictprice', { state : values})
-   
+
     }
 
     return (
@@ -114,7 +118,7 @@ const Homepage = () => {
                     ))}
                     </select>
                     <div class="homepage_formbuttonwrap form_element">
-                        <button class="fontAwesome homepage_formbutton" type="submit" >SEARCH &nbsp;&#xF061;</button>
+                        <button class="fontAwesome homepage_formbutton" type="submit" onClick={predictPrice} >SEARCH &nbsp;&#xF061;</button>
 
                     </div>
                 </form>
