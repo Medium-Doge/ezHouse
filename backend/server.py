@@ -118,8 +118,6 @@ class Server():
 
         house_info = self.regression_tree.getHouseInfo(postal_code)
 
-        print(predictors)
-
         return {
             "found"                 : True,
             "latitude"              : one_map_data["results"][0]["LATITUDE"],
