@@ -9,12 +9,12 @@ const Homepage = () => {
 
     const navigate = useNavigate();
 
-    const predictPrice = async () => {
-        // if used in more components, this should be in context
-        // axios to /logout endpoint
-        setAuth({});
-        navigate('/predictPrice');
-    }
+    // const predictPrice = async () => {
+    //     // if used in more components, this should be in context
+    //     // axios to /logout endpoint
+    //     setAuth({});
+    //     navigate('/predictPrice');
+    // }
 
 
     const [flat_type, setFlatType] = useState([])
@@ -96,7 +96,9 @@ const Homepage = () => {
                     <select id="flatstorey" class="form_element select" onChange={handleFlatStoreyChange}>
                         <option value="" disabled selected hidden>FLAT STOREY</option>
                         {storey_ranges.map((option, index) => (
-                            <option key={index} value={option.replace(/\s+/g, '')}>
+                            // <option key={index} value={option.replace(/\s+/g, '')}>
+                            <option key={index} value={option}>
+
                                 {option}
                             </option>
                     ))}
@@ -104,7 +106,7 @@ const Homepage = () => {
                     <select id="flattype" class="form_element select" onChange={handleTownChange}>
                         <option value="" disabled selected hidden>TOWN</option>
                         {towns.map((option, index) => (
-                            <option key={index} value={option.replace(/\s+/g, '')}>
+                            <option key={index} value={option}>
                                 {option}
                             </option>
                     ))}
@@ -112,13 +114,13 @@ const Homepage = () => {
                     <select id="flattype" class="form_element select" onChange={handleFlatTypeChange}>
                         <option value="" disabled selected hidden>FLAT TYPE</option>
                         {flat_type.map((option, index) => (
-                            <option key={index} value={option.replace(/\s+/g, '')}>
+                            <option key={index} value={option}>
                                 {option}
                             </option>
                     ))}
                     </select>
                     <div class="homepage_formbuttonwrap form_element">
-                        <button class="fontAwesome homepage_formbutton" type="submit" onClick={predictPrice} >SEARCH &nbsp;&#xF061;</button>
+                        <button class="fontAwesome homepage_formbutton" type="submit">SEARCH &nbsp;&#xF061;</button>
 
                     </div>
                 </form>
