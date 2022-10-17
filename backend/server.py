@@ -92,8 +92,14 @@ class Server():
 
         one_map_data = self.one_map_api.call(postal_code)
 
-        if one_map_data["found"] == 0 or postal_code not in self.regression_tree.getAllPostalCodes():
-            # Postal code must both found in OneMap API and in the hdb_info csv to be considered valid.
+        if (one_map_data["found"] == 0 
+                or postal_code not in self.regression_tree.getAllPostalCodes()
+                or town not in self.regression_tree.getTowns()
+                or flat_type not in self.regression_tree.getFlatTypes()
+                or storey_range not in self.regression_tree.getStoreyRanges()
+            ):
+            # Postal code must be found in OneMap API and postal_code, town, flat_type and storey_range must be found
+            # hdb_info csv to be considered valid.
             return {
                 "found" : False,
                 "predicted_price" : None

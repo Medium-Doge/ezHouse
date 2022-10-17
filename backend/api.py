@@ -60,7 +60,8 @@ class AmenitiesSearch(APIConnector):
             "food"      : ["restaurant"], 
             "transport" : ["subway_station"], 
             "leisure"   : ["shopping_mall"],
-            "education" : ["primary_school", "secondary_school", "university"]
+            # "education" : ["primary_school", "secondary_school", "university"]
+            "education" : ["primary_school", "secondary_school"]
         }
         self.__radius = 1000 # radius to search for places (in metres)
         self.__max_results = 2 # maximum results to return from subcategories (see self.__types)
@@ -75,10 +76,11 @@ class AmenitiesSearch(APIConnector):
         """
         data = {
             "found"     : True,
-            "food"      : [],
-            "transport" : [],
-            "leisure"   : [],
-            "education" : []
+            "results"   : list()
+            # "food"      : [],
+            # "transport" : [],
+            # "leisure"   : [],
+            # "education" : []
         }
 
         for key, value in self.__types.items():
@@ -103,21 +105,20 @@ class AmenitiesSearch(APIConnector):
                         except KeyError: # image could not be found
                             image = None
 
-                        data[key].append({
-                            "name"      : result["name"],
+                        data["results"].append({
+                            "name"      : result["name"] if type_ != "subway_station" else "{} MRT".format(result["name"]),
                             "location"  :   {
                                             "lat" : result["geometry"]["location"]["lat"],
                                             "lon" : result["geometry"]["location"]["lng"]
                                             },
-                            "image"     : image
+                            "image"     : image,
+                            "category"  : key,
+                            "address"   : result["vicinity"]
                         })
 
                         count += 1
 
                         if count == self.__max_results:
                             break
-
-                else:
-                    data[key] = None
 
         return data
