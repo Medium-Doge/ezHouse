@@ -9,7 +9,7 @@ pip install werkzeug==2.1.2
 pip install flask-cors
 """
 # self created libraries
-from api import HDBImageSearch, OneMapSearch, AmenitiesSearch
+from api import HDBImageSearch, OneMapSearch, AmenitiesSearch, ezHouseDatabase
 from model import RegressionTreeModel
 
 from flask import Flask, request
@@ -24,7 +24,9 @@ class Server():
         Initializes the server.
             - Creates a RegressionTreeModel object
             - Creates a HDBImageSearch API object
+            - Creates an Amenities API object
             - Creates a OneMapSearch API object
+            - Creates an ezHouseDatabase API object
         """
         print("Initialising Regression Tree Model...")
         self.regression_tree = RegressionTreeModel()
@@ -40,6 +42,10 @@ class Server():
 
         print("Initialising OneMapSearch API...")
         self.one_map_api = OneMapSearch()
+        print("Done.")
+
+        print("Initialising ezHouseDatabase API...")
+        self.ezhouse_db = ezHouseDatabase()
         print("Done.")
 
         print("Initialising API server...")
@@ -82,6 +88,14 @@ class Server():
         def __getAmenities():
             postal_code = request.args.get("postal_code")
             return self.getAmenities(postal_code)
+
+        @self.app.route("/register", methods=["POST"])
+        def __register():
+            data = request.get_json(silent=True)
+            if data == None:
+                return "Body is not JSON type or Request is not POST", 500
+
+            return self.register(data)
 
         # === END OF FLASK API ROUTES ===
             
@@ -166,7 +180,6 @@ class Server():
 
         return data
 
-
     def getCategories(self) -> dict:
         """
         Return self.regression_tree.towns, self.regression_tree.flat_types, self.regression_tree.storey_ranges
@@ -205,6 +218,11 @@ class Server():
         lon = one_map_data["results"][0]["LONGITUDE"]
 
         return self.amenities_api.call([lat,lon])
+
+    def register(self, data:dict):
+        print(data["username"])
+        print(data["password"])
+        return "Ok", 200
 
 def main():
     server = Server(__name__)

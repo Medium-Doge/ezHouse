@@ -1,5 +1,6 @@
 from typing import Union
 import requests
+import mysql.connector
 
 class APIConnector():
     """
@@ -41,7 +42,7 @@ class HDBImageSearch(APIConnector):
         self.__cx = cx
         self.__url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&q=Singapore%20{}"
     
-    def call(self, postal_code:Union[str, int]) -> Union[dict, None]:
+    def call(self, postal_code:str) -> Union[dict, None]:
         url = self.__url.format(
                 self._API_KEY, self.__cx, postal_code
             )
@@ -122,3 +123,44 @@ class AmenitiesSearch(APIConnector):
                             break
 
         return data
+
+class ezHouseDatabase(APIConnector):
+    def __init__(self, api_key=None):
+        super().__init__(api_key)
+        self.__host = "localhost"
+        self.__database = "ezHouse"
+        self.__username = "flask"
+        self.__password = "password123"
+
+    def __connect(self):
+        """
+        ONLY to be used in other methods.
+
+        Returns a connection object.
+        """
+        return mysql.connector.connect(
+            host = self.__host,
+            database = self.__database,
+            user = self.__username,
+            password = self.__password
+        )
+    
+    def append(self, username, password, role=None):
+        """
+        Adds new entry to the users database.
+        """
+        ezHouseDB_connection = self.__connect()
+        
+        cursor = ezHouseDB_connection.cursor()
+        cursor.execute("INSERT INTO users (username, password, role) VALUES ({u},{p},{r})".format(
+            u = username,
+            p = password,
+            r = role
+        ))
+
+        ezHouseDB_connection.commit()
+        cursor.close()
+        ezHouseDB_connection.close()
+
+    def verify(self, username, password):
+        pass
