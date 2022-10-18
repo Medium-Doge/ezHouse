@@ -7,6 +7,7 @@ pip install pandas
 pip install Flask==2.1.2
 pip install werkzeug==2.1.2
 pip install flask-cors
+pip install mysql-connector
 """
 # self created libraries
 from api import HDBImageSearch, OneMapSearch, AmenitiesSearch, ezHouseDatabase
@@ -235,10 +236,13 @@ class Server():
                 "message"   : "Account added to database."
             }
 
+    def login(self, data:dict):
+        pass
+
 def main():
     server = Server(__name__)
     # server.app.run("0.0.0.0", port=5000, ssl_context=("cert.pem", "key.pem"))
     server.app.run("0.0.0.0", port=5000)
-    
+
 if __name__ == "__main__":
     main()
