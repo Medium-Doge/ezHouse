@@ -125,4 +125,7 @@ class RegressionTreeModel():
     def getStoreyRanges(self) -> list:
         return self.__storey_ranges
 
+    def getHistory(self , postal_code):
+        return self.__resale.loc[self.__resale["postal_code"] == postal_code].to_dict("records")
+
     
