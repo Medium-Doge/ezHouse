@@ -1,6 +1,8 @@
 import requests
+from api import ezHouseDatabase
 
-data = requests.get("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=AcYSjRjHyJude5TbI8iXRSt9W1B9TzcqW_o1XikISXwAQlG6TFsotJeai3QJVRFTDmET6Ta2qfngZ53dGVL0MftlYDpEhidZGyYRVmI6ow6DkhtIsGdveW-7id49cIvThMgPWl6SGr58rajezGxA4Fy4RPuUdoZYSODNxrAbdzyrnuN0FZsN&key=AIzaSyDi6uFfup3Xhc4Y2azQ-VY-rdvridd22B4")
+db = ezHouseDatabase()
 
-print(data.__dict__)
+db.validUsername("jenseanfoo")
+
 
