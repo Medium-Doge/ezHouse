@@ -220,9 +220,20 @@ class Server():
         return self.amenities_api.call([lat,lon])
 
     def register(self, data:dict):
-        print(data["username"])
-        print(data["password"])
-        return "Ok", 200
+        if self.ezhouse_db.validUsername(data["username"]):
+            return {
+                "username"  : data["username"],
+                "SUCCESS"   : False,
+                "message"   : "Username already exists!"
+            }
+
+        else:
+            self.ezhouse_db.append(data["username"], data["password"])
+            return {
+                "username"  : data["username"],
+                "SUCCESS"   : True,
+                "message"   : "Account added to database."
+            }
 
 def main():
     server = Server(__name__)

@@ -152,15 +152,37 @@ class ezHouseDatabase(APIConnector):
         ezHouseDB_connection = self.__connect()
         
         cursor = ezHouseDB_connection.cursor()
-        cursor.execute("INSERT INTO users (username, password, role) VALUES ({u},{p},{r})".format(
-            u = username,
-            p = password,
-            r = role
-        ))
+        cursor.execute("INSERT INTO users (username, password, role) VALUES (%s,%s,%s)", 
+            tuple(username, password, role)
+        )
 
         ezHouseDB_connection.commit()
         cursor.close()
         ezHouseDB_connection.close()
 
-    def verify(self, username, password):
+    def validUsername(self, username):
+        """
+        Checks if username already exists in the database.
+
+        Returns True if valid, False if invalid.
+        """
+        ezHouseDB_connection = self.__connect()
+
+        cursor = ezHouseDB_connection.cursor()
+        cursor.execute("SELECT username FROM users WHERE username=%s", username)
+        print(cursor)
+        values = tuple(cursor)
+        cursor.close()
+        ezHouseDB_connection.close()
+
+        return True if username in values else False
+
+
+    def validAccount(self, username, password):
+        """
+        Checks if given username and password matches username and password stored in the database.
+        """
+
+        #  SELECT username FROM users WHERE username = 'jenseanfoo' AND password = 'password123';
+
         pass
