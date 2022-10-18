@@ -131,7 +131,7 @@ class Server():
         # predictors = pd.DataFrame([predictors])
 
         house_info = self.regression_tree.getHouseInfo(postal_code)
-
+        
         return {
             "found"                 : True,
             "latitude"              : one_map_data["results"][0]["LATITUDE"],
@@ -162,7 +162,8 @@ class Server():
             "3room_rental"          : int(house_info["3room_rental"]),
             "other_room_rental"     : int(house_info["other_room_rental"]),
             "address"               : house_info["address"],
-            "image"                 : self.hdb_image_api.call(postal_code)
+            "image"                 : self.hdb_image_api.call(postal_code),
+            "history"               : self.regression_tree.getHistory(postal_code)
         }
         
     def getRecentlySold(self) -> dict:
