@@ -131,7 +131,11 @@ class ezHouseDatabase(APIConnector):
         self.__database = "ezHouse"
         self.__username = "flask"
         self.__password = "password123"
+        self.__roles = ["buyer", "seller"]
 
+    def getRoles(self):
+        return self.__roles
+        
     def __connect(self):
         """
         ONLY to be used in other methods.

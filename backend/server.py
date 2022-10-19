@@ -237,13 +237,19 @@ class Server():
                 "message"   : "Username already exists!"
             }
 
-        else:
-            self.ezhouse_db.append(data["username"], data["password"])
-            return {
-                "username"  : data["username"],
-                "SUCCESS"   : True,
-                "message"   : "Account added to database."
-            }
+        if data["role"] not in self.ezhouse_db.getRoles():
+                return {
+                    "username"  : data["username"],
+                    "SUCCESS"   : False,
+                    "message"   : "Invalid role."
+                }
+
+        self.ezhouse_db.append(data["username"], data["password"], data["role"])
+        return {
+            "username"  : data["username"],
+            "SUCCESS"   : True,
+            "message"   : "Account added to database."
+        }
 
     def login(self, data:dict):
         if self.ezhouse_db.validAccount(data["username"], data["password"]):
