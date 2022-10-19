@@ -237,12 +237,12 @@ class Server():
                 "message"   : "Username already exists!"
             }
 
-        if data["role"] not in self.ezhouse_db.getRoles():
-            return {
-                "username"  : data["username"],
-                "SUCCESS"   : False,
-                "message"   : "Invalid role."
-            }
+        # if data["role"] not in self.ezhouse_db.getRoles():
+        #     return {
+        #         "username"  : data["username"],
+        #         "SUCCESS"   : False,
+        #         "message"   : "Invalid role."
+        #     }
 
         self.ezhouse_db.append(data["username"], data["password"], data["role"])
         return {

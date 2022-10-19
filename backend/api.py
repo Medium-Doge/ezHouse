@@ -135,7 +135,7 @@ class ezHouseDatabase(APIConnector):
 
     def getRoles(self):
         return self.__roles
-        
+
     def __connect(self):
         """
         ONLY to be used in other methods.
@@ -157,7 +157,7 @@ class ezHouseDatabase(APIConnector):
         
         cursor = ezHouseDB_connection.cursor()
         cursor.execute("INSERT INTO users (username, password, role) VALUES (%s,%s,%s)", 
-            (username, password, role)
+            (username, password, str(role))
         )
 
         ezHouseDB_connection.commit()
