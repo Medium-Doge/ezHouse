@@ -98,6 +98,14 @@ class Server():
 
             return self.register(data)
 
+        @self.app.route("/login", methods=["POST"])
+        def __login():
+            data = request.get_json(silent=True)
+            if data == None:
+                return "Body is not JSON type or Request is not POST", 500
+            
+            return self.login(data)
+
         # === END OF FLASK API ROUTES ===
             
     def hello_world(self):
@@ -238,7 +246,19 @@ class Server():
             }
 
     def login(self, data:dict):
-        pass
+        if self.ezhouse_db.validAccount(data["username"], data["password"]):
+            return {
+                "username"  : data["username"],
+                "SUCCESS"   : True,
+                "message"   : "Successfully login."
+            }
+
+        else:
+            return {
+                "username"  : data["username"],
+                "SUCCESS"   : False,
+                "message"   : "Username or password is wrong."
+            }
 
 def main():
     server = Server(__name__)

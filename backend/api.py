@@ -187,5 +187,19 @@ class ezHouseDatabase(APIConnector):
         """
 
         #  SELECT username FROM users WHERE username = 'jenseanfoo' AND password = 'password123';
+        ezHouseDB_connection = self.__connect()
 
-        pass
+        cursor = ezHouseDB_connection.cursor()
+        cursor.execute("SELECT username FROM users WHERE username = %s AND password = %s", 
+            (username, password)
+            )
+
+        values = tuple(cursor)
+        cursor.close()
+        ezHouseDB_connection.close()
+
+        for v in values:
+            if username in v:
+                return True
+            
+        return False
