@@ -2,17 +2,16 @@ import React, { useState, useEffect } from 'react'
 import triangle from './triangle.svg';
 import background from './background.svg';
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import AuthContext from "../context/AuthProvider";
 import css from './homepage.css';
 import axios from 'axios';
 
 const Homepage = () => {
+    const { setAuth } = useContext(AuthContext);
 
-    const navigate = useNavigate();
-
-    const predictPrice = async () => {
-        // if used in more components, this should be in context
-        // axios to /logout endpoint
-        setAuth({});
+    let navigate = useNavigate();
+    const routeChange = () => {
         navigate('/predictPrice');
     }
 
@@ -75,11 +74,11 @@ const Homepage = () => {
         }));
     };
 
-    const handleSubmit = (event) => {
-        console.log(values);
-        navigate('/predictprice', { state : values})
-
-    }
+    // const handleSubmit = (event) => {
+    //     console.log(values);
+    //     navigate('/editor', { state : values})
+    //
+    // }
 
     return (
         <div class="homepage_main" style={{ backgroundImage: `url(${background})` }}>
@@ -91,7 +90,7 @@ const Homepage = () => {
                 <div class="homepage_bodyt1">Locate your dream home</div>
                 <div>One stop service to locate your dream home in Singapore with Artificial Intelligence price predictor</div>
 
-                <form class="form-inline homepage_form" onSubmit={handleSubmit}>
+                <form class="form-inline homepage_form" onSubmit={routeChange}>
                     <input type="text" class="fontAwesome form_element text" name="postalcode" placeholder="&#xF002; Enter postal code" value={values.postalcode} onChange={handlePostalCodeChange} />
                     <select id="flatstorey" class="form_element select" onChange={handleFlatStoreyChange}>
                         <option value="" disabled selected hidden>FLAT STOREY</option>
@@ -118,7 +117,7 @@ const Homepage = () => {
                     ))}
                     </select>
                     <div class="homepage_formbuttonwrap form_element">
-                        <button class="fontAwesome homepage_formbutton" type="submit" onClick={predictPrice} >SEARCH &nbsp;&#xF061;</button>
+                        <button class="fontAwesome homepage_formbutton" type="submit" >SEARCH &nbsp;&#xF061;</button>
 
                     </div>
                 </form>

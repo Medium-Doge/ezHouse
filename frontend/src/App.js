@@ -6,7 +6,6 @@ import Missing from './authorisation/Missing';
 import Unauthorized from './authorisation/Unauthorized';
 import Register from './authorisation/Register';
 import Login from './authorisation/Login';
-import LinkPage from './authorisation/LinkPage';
 import RequireAuth from './authorisation/RequireAuth';
 import PredictPrice from './predictprice';
 
@@ -38,15 +37,13 @@ function App() {
           {/* public routes */}
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
-          <Route path="linkpage" element={<LinkPage />} />
           <Route path="unauthorized" element={<Unauthorized />} />
           <Route path="index" element={<Home />} />
-          <Route path="predictPrice" element={<PredictPrice />} />
 
-          {/*<Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
               <Route path="predictPrice" element={<PredictPrice />} />
           </Route>
-          {/* catch all */}*/}
+          {/* catch all */}
 
           <Route path="*" element={<Missing />} />
       </Routes>
