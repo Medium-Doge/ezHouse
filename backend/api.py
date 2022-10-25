@@ -188,12 +188,10 @@ class ezHouseDatabase(APIConnector):
 
         return False
 
-
     def validAccount(self, username, password):
         """
         Checks if given username and password matches username and password stored in the database.
         """
-
         #  SELECT username FROM users WHERE username = 'jenseanfoo' AND password = 'password123';
         ezHouseDB_connection = self.__connect()
 

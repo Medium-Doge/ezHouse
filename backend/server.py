@@ -8,6 +8,7 @@ pip install Flask==2.1.2
 pip install werkzeug==2.1.2
 pip install flask-cors
 pip install mysql-connector
+pip install expiring-dict
 """
 # self created libraries
 from api import HDBImageSearch, OneMapSearch, AmenitiesSearch, ezHouseDatabase
@@ -15,6 +16,7 @@ from model import RegressionTreeModel
 
 from flask import Flask, request
 from flask_cors import CORS
+from expiring_dict import ExpiringDict
 
 GOOGLE_API_KEY = "AIzaSyDi6uFfup3Xhc4Y2azQ-VY-rdvridd22B4"
 CX = "57ca1c7140b714b5b"
@@ -47,6 +49,10 @@ class Server():
 
         print("Initialising ezHouseDatabase API...")
         self.ezhouse_db = ezHouseDatabase()
+        print("Done.")
+
+        print("Initialising sessions data...")
+        self.__sessions = ExpiringDict(900)
         print("Done.")
 
         print("Initialising API server...")
@@ -105,6 +111,14 @@ class Server():
                 return "Body is not JSON type or Request is not POST", 500
             
             return self.login(data)
+
+        @self.app.route("/validsession", methods=["POST"])
+        def __validSession():
+            data = request.get_json(silent=True)
+            if data == None:
+                return "Body is not JSON type or Request is not POST", 500
+            
+            return self.validSession(data)
 
         # === END OF FLASK API ROUTES ===
             
@@ -253,6 +267,7 @@ class Server():
 
     def login(self, data:dict):
         if self.ezhouse_db.validAccount(data["username"], data["password"]):
+            self.__sessions[data["username"]] = True
             return {
                 "username"  : data["username"],
                 "SUCCESS"   : True,
@@ -265,6 +280,19 @@ class Server():
                 "SUCCESS"   : False,
                 "message"   : "Username or password is wrong."
             }
+
+    def validSession(self, data):
+        """
+        Checks if user session is still valid.
+        """
+        if not self.ezhouse_db.validUsername(data["username"]):
+            return "Unable to verify session of username that does not exist in database.", 500
+
+        if data["username"] in self.__sessions:
+            return True
+        else:
+            return False
+
 
 def main():
     server = Server(__name__)
