@@ -7,13 +7,18 @@ pip install pandas
 pip install Flask==2.1.2
 pip install werkzeug==2.1.2
 pip install flask-cors
+pip install mysql-connector
+pip install expiring-dict
 """
 # self created libraries
-from api import HDBImageSearch, OneMapSearch, AmenitiesSearch
+from api import HDBImageSearch, OneMapSearch, AmenitiesSearch, ezHouseDatabase
 from model import RegressionTreeModel
 
 from flask import Flask, request
 from flask_cors import CORS
+from expiring_dict import ExpiringDict
+from hashlib import sha256
+import random, string
 
 GOOGLE_API_KEY = "AIzaSyDi6uFfup3Xhc4Y2azQ-VY-rdvridd22B4"
 CX = "57ca1c7140b714b5b"
@@ -24,7 +29,9 @@ class Server():
         Initializes the server.
             - Creates a RegressionTreeModel object
             - Creates a HDBImageSearch API object
+            - Creates an Amenities API object
             - Creates a OneMapSearch API object
+            - Creates an ezHouseDatabase API object
         """
         print("Initialising Regression Tree Model...")
         self.regression_tree = RegressionTreeModel()
@@ -42,6 +49,14 @@ class Server():
         self.one_map_api = OneMapSearch()
         print("Done.")
 
+        print("Initialising ezHouseDatabase API...")
+        self.ezhouse_db = ezHouseDatabase()
+        print("Done.")
+
+        print("Initialising sessions data...")
+        self.__sessions = ExpiringDict(900)
+        print("Done.")
+
         print("Initialising API server...")
         self.app = Flask(name)
         CORS(self.app)
@@ -53,13 +68,15 @@ class Server():
         def __hello_world():
             return self.hello_world()
 
-        @self.app.route("/predict", methods=["GET"])
+        @self.app.route("/predict", methods=["POST"])
         def __getPrediction():
             # lease = request.args.get("lease")
-            postal_code = request.args.get("postal_code")
-            town = request.args.get("town")
-            flat_type = request.args.get("flat_type")
-            storey_range = request.args.get("storey_range")
+            # postal_code = request.args.get("postal_code")
+            # town = request.args.get("town")
+            # flat_type = request.args.get("flat_type")
+            # storey_range = request.args.get("storey_range")
+            data = request.get_json()
+            return self.getPrediction(data)
             return self.getPrediction(postal_code, town, flat_type, storey_range)
 
         @self.app.route("/recentlysold", methods=["GET"])
@@ -83,12 +100,49 @@ class Server():
             postal_code = request.args.get("postal_code")
             return self.getAmenities(postal_code)
 
+        @self.app.route("/register", methods=["POST"])
+        def __register():
+            data = request.get_json(silent=True)
+            if data == None:
+                return "Body is not JSON type or Request is not POST", 500
+
+            return self.register(data)
+
+        @self.app.route("/login", methods=["POST"])
+        def __login():
+            data = request.get_json(silent=True)
+            if data == None:
+                return "Body is not JSON type or Request is not POST", 500
+            
+            return self.login(data)
+
+        @self.app.route("/validsession", methods=["POST"])
+        def __validSession():
+            data = request.get_json(silent=True)
+            if data == None:
+                return "Body is not JSON type or Request is not POST", 500
+            
+            return self.validSession(data)
+
         # === END OF FLASK API ROUTES ===
             
     def hello_world(self):
         return {"test": ["Hello", "World"]}
 
-    def getPrediction(self, postal_code:str, town:str, flat_type:str, storey_range:str):
+    def getPrediction(self, data:dict):
+
+        token = data["session"]
+
+        if token not in self.__sessions:
+            return {
+                "found" : False,
+                "message" : "Session expired or not found."
+            }
+
+        postal_code = data["postal_code"]
+        town = data["town"]
+        flat_type = data["flat_type"]
+        storey_range = data["storey_range"]
 
         one_map_data = self.one_map_api.call(postal_code)
 
@@ -117,7 +171,7 @@ class Server():
         # predictors = pd.DataFrame([predictors])
 
         house_info = self.regression_tree.getHouseInfo(postal_code)
-
+        
         return {
             "found"                 : True,
             "latitude"              : one_map_data["results"][0]["LATITUDE"],
@@ -148,7 +202,8 @@ class Server():
             "3room_rental"          : int(house_info["3room_rental"]),
             "other_room_rental"     : int(house_info["other_room_rental"]),
             "address"               : house_info["address"],
-            "image"                 : self.hdb_image_api.call(postal_code)
+            "image"                 : self.hdb_image_api.call(postal_code),
+            "history"               : self.regression_tree.getHistory(postal_code)
         }
         
     def getRecentlySold(self) -> dict:
@@ -165,7 +220,6 @@ class Server():
             }
 
         return data
-
 
     def getCategories(self) -> dict:
         """
@@ -206,10 +260,62 @@ class Server():
 
         return self.amenities_api.call([lat,lon])
 
+    def register(self, data:dict):
+        if self.ezhouse_db.validUsername(data["username"]):
+            return {
+                "username"  : data["username"],
+                "SUCCESS"   : False,
+                "message"   : "Username already exists!"
+            }
+
+        # if data["role"] not in self.ezhouse_db.getRoles():
+        #     return {
+        #         "username"  : data["username"],
+        #         "SUCCESS"   : False,
+        #         "message"   : "Invalid role."
+        #     }
+
+        self.ezhouse_db.append(data["username"], data["password"])
+        return {
+            "username"  : data["username"],
+            "SUCCESS"   : True,
+            "message"   : "Account added to database."
+        }
+
+    def login(self, data:dict):
+        if self.ezhouse_db.validAccount(data["username"], data["password"]):
+            token = sha256("".join(random.choices(string.ascii_lowercase, k=20)).encode("utf-8")).hexdigest()
+            self.__sessions[token] = True
+            return {
+                "username"  : data["username"],
+                "SUCCESS"   : True,
+                "message"   : "Successfully login.",
+                "session"   : token
+            }
+
+        else:
+            return {
+                "username"  : data["username"],
+                "SUCCESS"   : False,
+                "message"   : "Username or password is wrong."
+            }
+
+    # def validSession(self, data):
+    #     """
+    #     Checks if user session is still valid.
+    #     """
+    #     if not self.ezhouse_db.validUsername(data["username"]):
+    #         return "Unable to verify session of username that does not exist in database.", 500
+
+    #     if data["username"] in self.__sessions:
+    #         return {"valid_session" : True}
+    #     else:
+    #         return {"valid_session" : False}
+
 def main():
     server = Server(__name__)
     # server.app.run("0.0.0.0", port=5000, ssl_context=("cert.pem", "key.pem"))
     server.app.run("0.0.0.0", port=5000)
-    
+
 if __name__ == "__main__":
     main()

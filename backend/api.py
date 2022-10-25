@@ -1,13 +1,15 @@
 from typing import Union
 import requests
+import mysql.connector
 
 class APIConnector():
     """
-    APIConnector parent class. For a new API service, create a class that inherits from APIConnector, and override the
+    APIConnector abstract parent class. For a new API service, create a class that inherits from APIConnector, and override the
     call() method.
     """
-    def __init__(self, api_key=None):
+    def __init__(self, api_key=None, url=None):
         self._API_KEY = api_key
+        self._url = url
 
     def call():
         """
@@ -17,8 +19,8 @@ class APIConnector():
 
 class OneMapSearch(APIConnector):
     def __init__(self):
-        super().__init__()
-        self.__url = "https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=Y"
+        super().__init__(url="https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=Y")
+        # self.__url = "https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=Y"
 
     def call(self, postal_code:Union[int, str]):
         """
@@ -27,7 +29,7 @@ class OneMapSearch(APIConnector):
             request (str) : Has to be either of these options ("latlon", ...)
         """
         data = requests.get(
-            self.__url.format(postal_code)
+            self._url.format(postal_code)
             ).json()
 
         return data
@@ -37,12 +39,12 @@ class HDBImageSearch(APIConnector):
     Uses Custom Google Search Engine API 
     """
     def __init__(self, api_key, cx):
-        super().__init__(api_key)
+        super().__init__(api_key=api_key, url="https://www.googleapis.com/customsearch/v1?key={}&cx={}&q=Singapore%20{}")
         self.__cx = cx
-        self.__url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&q=Singapore%20{}"
+        # self.__url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&q=Singapore%20{}"
     
-    def call(self, postal_code:Union[str, int]) -> Union[dict, None]:
-        url = self.__url.format(
+    def call(self, postal_code:str) -> Union[dict, None]:
+        url = self._url.format(
                 self._API_KEY, self.__cx, postal_code
             )
 
@@ -55,7 +57,10 @@ class HDBImageSearch(APIConnector):
 
 class AmenitiesSearch(APIConnector):
     def __init__(self, api_key):
-        super().__init__(api_key)
+        super().__init__(
+            api_key=api_key,
+            url="https://maps.googleapis.com/maps/api/place/nearbysearch/json?type={type}&location={location}&radius={radius}&key={api_key}"
+        )
         self.__types = {
             "food"      : ["restaurant"], 
             "transport" : ["subway_station"], 
@@ -65,7 +70,7 @@ class AmenitiesSearch(APIConnector):
         }
         self.__radius = 1000 # radius to search for places (in metres)
         self.__max_results = 2 # maximum results to return from subcategories (see self.__types)
-        self.__url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?type={type}&location={location}&radius={radius}&key={api_key}"
+        # self.__url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?type={type}&location={location}&radius={radius}&key={api_key}"
         self.__image_url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth={width}&photo_reference={image_ref}&key={api_key}"
 
     def call(self, coord:list) -> dict:
@@ -85,7 +90,7 @@ class AmenitiesSearch(APIConnector):
 
         for key, value in self.__types.items():
             for type_ in value:
-                url = self.__url.format(
+                url = self._url.format(
                     type = type_,
                     location = ",".join(coord),
                     radius = self.__radius,
@@ -122,3 +127,85 @@ class AmenitiesSearch(APIConnector):
                             break
 
         return data
+
+class ezHouseDatabase(APIConnector):
+    def __init__(self, api_key=None):
+        super().__init__(api_key=api_key)
+        self.__host = "localhost"
+        self.__database = "ezHouse"
+        self.__username = "flask"
+        self.__password = "password123"
+        self.__roles = ["buyer", "seller"]
+
+    def getRoles(self):
+        return self.__roles
+
+    def __connect(self):
+        """
+        ONLY to be used in other methods.
+
+        Returns a connection object.
+        """
+        return mysql.connector.connect(
+            host = self.__host,
+            database = self.__database,
+            user = self.__username,
+            password = self.__password
+        )
+    
+    def append(self, username, password, role=None):
+        """
+        Adds new entry to the users database.
+        """
+        ezHouseDB_connection = self.__connect()
+        
+        cursor = ezHouseDB_connection.cursor()
+        cursor.execute("INSERT INTO users (username, password, role) VALUES (%s,%s,%s)", 
+            (username, password, str(role))
+        )
+
+        ezHouseDB_connection.commit()
+        cursor.close()
+        ezHouseDB_connection.close()
+
+    def validUsername(self, username:str):
+        """
+        Checks if username already exists in the database.
+
+        Returns True if valid, False if invalid.
+        """
+        ezHouseDB_connection = self.__connect()
+
+        cursor = ezHouseDB_connection.cursor()
+        cursor.execute("SELECT username FROM users")
+        values = tuple(cursor)
+        cursor.close()
+        ezHouseDB_connection.close()
+
+        for v in values:
+            if username in v:
+                return True
+
+        return False
+
+    def validAccount(self, username, password):
+        """
+        Checks if given username and password matches username and password stored in the database.
+        """
+        #  SELECT username FROM users WHERE username = 'jenseanfoo' AND password = 'password123';
+        ezHouseDB_connection = self.__connect()
+
+        cursor = ezHouseDB_connection.cursor()
+        cursor.execute("SELECT username FROM users WHERE username = %s AND password = %s", 
+            (username, password)
+            )
+
+        values = tuple(cursor)
+        cursor.close()
+        ezHouseDB_connection.close()
+
+        for v in values:
+            if username in v:
+                return True
+            
+        return False

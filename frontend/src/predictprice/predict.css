@@ -58,6 +58,32 @@
     margin: 10px 0 0 10px;
 }
 
+.predictprice_hdbinfotext {
+    font-weight: 600;
+    margin: 5px 0;
+    display: block;
+}
+
+.predictprice_filterText {
+    font-weight: bold;
+}
+
+.predictprice_filterbutton {
+    background-color: #D9D9D9;
+    border-radius: 20px;
+    width: 113px;
+    height: 40px;
+    padding: 5px;
+    margin: 0 10px;
+}
+
+.activeButton {
+    border: 2px solid #4A73A1;
+    color: #4A73A1;
+}
+.predictprice_amentieswrap {
+    margin-top: 20px;
+}
 .predictprice_amenitiestext {
     font-size: 26px;
     font-weight: 700;
@@ -66,6 +92,7 @@
 }
 .predictprice_amenitiescontentwrap {
     max-height: 400px;
+    margin-top: 15px;
     overflow-y: scroll;
 }
 .predictprice_oneAmenities {
@@ -87,6 +114,11 @@
 }
 .predictprice_oneAmenitiesTitle {
     padding-bottom: 20px;
+    font-weight: bold;
+}
+
+.predictprice_oneAmenitiesCategory {
+    padding-bottom: 20px;
 }
 
 .loader {
@@ -96,3 +128,41 @@
         top: "40%";
         left: "45%";
  }
+ predictprice_historywrap {
+    margin-left: 10px;
+ }
+.predictprice_historytext {
+    font-size: 26px;
+    font-weight: 700;
+    margin-top: 20px;
+    color: #4A73A1;
+}
+
+.predictprice_historycontentwrap {
+    max-height: 500px;
+    margin-top: 5px;
+    overflow-y: scroll;
+}
+
+ #predictprice_historytable {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  #predictprice_historytable td, #predictprice_historytable th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  #predictprice_historytable tr:nth-child(even){background-color: #f2f2f2;}
+  
+  #predictprice_historytable tr:hover {background-color: #ddd;}
+  
+  #predictprice_historytable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #04AA6D;
+    color: white;
+  }

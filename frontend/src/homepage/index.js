@@ -74,11 +74,11 @@ const Homepage = () => {
         }));
     };
 
-    // const handleSubmit = (event) => {
-    //     console.log(values);
-    //     navigate('/editor', { state : values})
-    //
-    // }
+    const handleSubmit = (event) => {
+        console.log(values);
+        navigate('/predictprice', { state : values})
+    
+    }
 
     return (
         <div class="homepage_main" style={{ backgroundImage: `url(${background})` }}>
@@ -90,12 +90,14 @@ const Homepage = () => {
                 <div class="homepage_bodyt1">Locate your dream home</div>
                 <div>One stop service to locate your dream home in Singapore with Artificial Intelligence price predictor</div>
 
-                <form class="form-inline homepage_form" onSubmit={routeChange}>
+                <form class="form-inline homepage_form" onSubmit={handleSubmit}>
                     <input type="text" class="fontAwesome form_element text" name="postalcode" placeholder="&#xF002; Enter postal code" value={values.postalcode} onChange={handlePostalCodeChange} />
                     <select id="flatstorey" class="form_element select" onChange={handleFlatStoreyChange}>
                         <option value="" disabled selected hidden>FLAT STOREY</option>
                         {storey_ranges.map((option, index) => (
-                            <option key={index} value={option.replace(/\s+/g, '')}>
+                            // <option key={index} value={option.replace(/\s+/g, '')}>
+                            <option key={index} value={option}>
+
                                 {option}
                             </option>
                     ))}
@@ -103,7 +105,7 @@ const Homepage = () => {
                     <select id="flattype" class="form_element select" onChange={handleTownChange}>
                         <option value="" disabled selected hidden>TOWN</option>
                         {towns.map((option, index) => (
-                            <option key={index} value={option.replace(/\s+/g, '')}>
+                            <option key={index} value={option}>
                                 {option}
                             </option>
                     ))}
@@ -111,7 +113,7 @@ const Homepage = () => {
                     <select id="flattype" class="form_element select" onChange={handleFlatTypeChange}>
                         <option value="" disabled selected hidden>FLAT TYPE</option>
                         {flat_type.map((option, index) => (
-                            <option key={index} value={option.replace(/\s+/g, '')}>
+                            <option key={index} value={option}>
                                 {option}
                             </option>
                     ))}

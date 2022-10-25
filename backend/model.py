@@ -33,25 +33,25 @@ class RegressionTreeModel():
         self.__hdb_info.drop(self.__hdb_info.columns[self.__hdb_info.columns.str.contains('unnamed',case = False)],
                             axis=1, inplace=True)
 
-        # update postal code in resale dataframe from hdb_info dataframe
-        for index, row in self.__resale.iterrows():
-            # self.resale.at[index, "postal_code"] = \
-            #     self.hdb_info[(self.hdb_info["address"] == "{} {}".format(row[3],row[4]))]["postal_code"].array[0]
-            self.__resale.at[index, "postal_code"] = self.__hdb_info[(self.__hdb_info["address"] == "{} {}".format(row[3], row[4]))]["postal_code"].array[0]
+        # # update postal code in resale dataframe from hdb_info dataframe
+        # for index, row in self.__resale.iterrows():
+        #     # self.resale.at[index, "postal_code"] = \
+        #     #     self.hdb_info[(self.hdb_info["address"] == "{} {}".format(row[3],row[4]))]["postal_code"].array[0]
+        #     self.__resale.at[index, "postal_code"] = self.__hdb_info[(self.__hdb_info["address"] == "{} {}".format(row[3], row[4]))]["postal_code"].array[0]
 
-        # change "month" column to datetime datatype
-        self.__resale["month"] =  pd.to_datetime(self.__resale["month"])
-        self.__resale.sort_values(by="month", ascending=False, inplace=True) 
-        # resale dataframe is now sorted with latest date as the first entry
+        # # change "month" column to datetime datatype
+        # self.__resale["month"] =  pd.to_datetime(self.__resale["month"])
+        # self.__resale.sort_values(by="month", ascending=False, inplace=True) 
+        # # resale dataframe is now sorted with latest date as the first entry
         
-        # change remaining lease in years to months
-        for index, row in self.__resale.iterrows():
-            lease = row[9].split(" ")
-            self.__resale.at[index, "remaining_lease"] = \
-                int(lease[0]) * 12 + int(lease[2]) if len(lease) == 4 else int(lease[0])
+        # # change remaining lease in years to months
+        # for index, row in self.__resale.iterrows():
+        #     lease = row[9].split(" ")
+        #     self.__resale.at[index, "remaining_lease"] = \
+        #         int(lease[0]) * 12 + int(lease[2]) if len(lease) == 4 else int(lease[0])
 
-        self.__resale.rename(columns = {"remaining_lease":"remaining_lease (months)"}, inplace=True)
-        self.__resale["remaining_lease (months)"] = self.__resale["remaining_lease (months)"].astype("int64")
+        # self.__resale.rename(columns = {"remaining_lease":"remaining_lease (months)"}, inplace=True)
+        # self.__resale["remaining_lease (months)"] = self.__resale["remaining_lease (months)"].astype("int64")
 
         # export towns, floor_types, storey_ranges before encoding them
         self.__towns = list(self.__resale["town"].unique())
@@ -125,4 +125,6 @@ class RegressionTreeModel():
     def getStoreyRanges(self) -> list:
         return self.__storey_ranges
 
-    
+    def getHistory(self , postal_code):
+        data = self.__resale.loc[self.__resale["postal_code"] == postal_code].to_dict("records")
+        return data if data else None
