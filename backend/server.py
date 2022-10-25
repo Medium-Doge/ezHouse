@@ -17,6 +17,8 @@ from model import RegressionTreeModel
 from flask import Flask, request
 from flask_cors import CORS
 from expiring_dict import ExpiringDict
+from hashlib import sha256
+import random, string
 
 GOOGLE_API_KEY = "AIzaSyDi6uFfup3Xhc4Y2azQ-VY-rdvridd22B4"
 CX = "57ca1c7140b714b5b"
@@ -66,13 +68,15 @@ class Server():
         def __hello_world():
             return self.hello_world()
 
-        @self.app.route("/predict", methods=["GET"])
+        @self.app.route("/predict", methods=["POST"])
         def __getPrediction():
             # lease = request.args.get("lease")
-            postal_code = request.args.get("postal_code")
-            town = request.args.get("town")
-            flat_type = request.args.get("flat_type")
-            storey_range = request.args.get("storey_range")
+            # postal_code = request.args.get("postal_code")
+            # town = request.args.get("town")
+            # flat_type = request.args.get("flat_type")
+            # storey_range = request.args.get("storey_range")
+            data = request.get_json()
+            return self.getPrediction(data)
             return self.getPrediction(postal_code, town, flat_type, storey_range)
 
         @self.app.route("/recentlysold", methods=["GET"])
@@ -125,7 +129,20 @@ class Server():
     def hello_world(self):
         return {"test": ["Hello", "World"]}
 
-    def getPrediction(self, postal_code:str, town:str, flat_type:str, storey_range:str):
+    def getPrediction(self, data:dict):
+
+        token = data["session"]
+
+        if token not in self.__sessions:
+            return {
+                "found" : False,
+                "message" : "Session expired or not found."
+            }
+
+        postal_code = data["postal_code"]
+        town = data["town"]
+        flat_type = data["flat_type"]
+        storey_range = data["storey_range"]
 
         one_map_data = self.one_map_api.call(postal_code)
 
@@ -258,7 +275,7 @@ class Server():
         #         "message"   : "Invalid role."
         #     }
 
-        self.ezhouse_db.append(data["username"], data["password"], data["role"])
+        self.ezhouse_db.append(data["username"], data["password"])
         return {
             "username"  : data["username"],
             "SUCCESS"   : True,
@@ -267,11 +284,13 @@ class Server():
 
     def login(self, data:dict):
         if self.ezhouse_db.validAccount(data["username"], data["password"]):
-            self.__sessions[data["username"]] = True
+            token = sha256("".join(random.choices(string.ascii_lowercase, k=20)).encode("utf-8")).hexdigest()
+            self.__sessions[token] = True
             return {
                 "username"  : data["username"],
                 "SUCCESS"   : True,
-                "message"   : "Successfully login."
+                "message"   : "Successfully login.",
+                "session"   : token
             }
 
         else:
@@ -281,18 +300,17 @@ class Server():
                 "message"   : "Username or password is wrong."
             }
 
-    def validSession(self, data):
-        """
-        Checks if user session is still valid.
-        """
-        if not self.ezhouse_db.validUsername(data["username"]):
-            return "Unable to verify session of username that does not exist in database.", 500
+    # def validSession(self, data):
+    #     """
+    #     Checks if user session is still valid.
+    #     """
+    #     if not self.ezhouse_db.validUsername(data["username"]):
+    #         return "Unable to verify session of username that does not exist in database.", 500
 
-        if data["username"] in self.__sessions:
-            return {"valid_session" : True}
-        else:
-            return {"valid_session" : False}
-
+    #     if data["username"] in self.__sessions:
+    #         return {"valid_session" : True}
+    #     else:
+    #         return {"valid_session" : False}
 
 def main():
     server = Server(__name__)
