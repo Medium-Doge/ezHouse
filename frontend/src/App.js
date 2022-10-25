@@ -39,10 +39,11 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="unauthorized" element={<Unauthorized />} />
           <Route path="index" element={<Home />} />
+          <Route path="predictPrice" element={<PredictPrice />} />
 
-          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+          {/* <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
               <Route path="predictPrice" element={<PredictPrice />} />
-          </Route>
+          </Route> */}
           {/* catch all */}
 
           <Route path="*" element={<Missing />} />

@@ -61,7 +61,7 @@ var violetIcon = new L.Icon({
 const PredictPrice = () => {
   let [loading, setLoading] = useState(false);
   const { state } = useLocation();
-  var backendData = { latitude: 1.3435001655425816, longitude: 103.70334820770225 };
+  var backendData = { latitude: 1.3435001655425816, longitude: 103.70334820770225, history: [ {}] };
   const [data, setData] = useState(backendData);
   const [amenities, setAmenities] = useState([]);
   var defaultLoc = [1.3435001655425816, 103.70334820770225]
@@ -73,8 +73,14 @@ const PredictPrice = () => {
 
     console.log(state)
     axios({
-      method: 'get',
-      url: 'http://13.228.217.57:5000/predict?postal_code=' + state.postal_code + '&town=' + state.town + '&flat_type=' + state.flat_type + '&storey_range=' + state.storey_range
+      method: 'post',
+      url: 'http://13.228.217.57:5000/predict',
+      data: {"postal_code": state.postal_code, 
+              "town": state.town, 
+              "flat_type": state.flat_type, 
+              "storey_range": state.storey_range, 
+              "session": "1ee990060ea77e2a079861ff02fa3619a29dbb8beca06f05e606309efe853070" 
+            }
     })
       .then(res => {
         console.log(res.data);
@@ -116,6 +122,8 @@ const PredictPrice = () => {
           console.log(error.response.data);
           console.log(error.response.status);
           console.log(error.response.headers);
+          setLoading(false);
+
         }
       })
 
@@ -204,6 +212,7 @@ const PredictPrice = () => {
 
             </div>
           </div>
+          
 
         </div>
         <div class="predictprice_mapwrapper">
@@ -228,6 +237,7 @@ const PredictPrice = () => {
             </Marker>
           </MapContainer>
         </div>
+        
         <Loader
           color={"#36d7b7"}
           loading={loading}
@@ -237,6 +247,56 @@ const PredictPrice = () => {
           data-testid="loader"
         />
       </div>
+      <div class="predictprice_historywrap">
+            <div class="predictprice_historytext">History</div>
+
+            <div class="predictprice_historycontentwrap">
+            <div class="predictprice_oneAmenities">
+                      <table id="predictprice_historytable">
+                        <tr>
+                          <th>Index</th>
+                          <th>Block</th>
+                          <th>Flat Model</th>
+                          <th>Flat Type</th>
+                          <th>Floor Sq Area</th>
+                          <th>Lease Commence Date</th>
+                          <th>Month</th>
+                          <th>Postal Code</th>
+                          {/* <th>Remaing Lease Months</th> */}
+                          <th>Resale Price</th>
+                          <th>Storey Range</th>
+                          <th>Street Name</th>
+                          <th>Town</th>
+                        </tr>
+              {
+                data.history.map((oneHistory, index) => (
+                  data.history.length > 0 ?
+                      <>
+                        <tr>
+                          <td>{index+1}</td>
+                          <td>{oneHistory.block}</td>
+                          <td>{oneHistory.flat_model}</td>
+                          <td>{oneHistory.flat_type}</td>
+                          <td>{oneHistory.floor_area_sqm}</td>
+                          <td>{oneHistory.lease_commence_date}</td>
+                          <td>{oneHistory.month}</td>
+                          <td>{oneHistory.postal_code}</td>
+                          {/* <td>{oneHistory.remaining_lease (months)}</td> */}
+                          <td>{oneHistory.resale_price}</td>
+                          <td>{oneHistory.storey_range}</td>
+                          <td>{oneHistory.street_name}</td>
+                          <td>{oneHistory.town}</td>
+
+                        </tr>
+                      </>
+                    : null
+                ))
+
+              }
+                      </table>
+                    </div>
+            </div>
+          </div>
     </>
   )
 }
