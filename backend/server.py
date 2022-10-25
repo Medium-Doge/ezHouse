@@ -131,13 +131,13 @@ class Server():
 
     def getPrediction(self, data:dict):
 
-        token = data["session"]
+        # token = data["session"]
 
-        if token not in self.__sessions:
-            return {
-                "found" : False,
-                "message" : "Session expired or not found."
-            }
+        # if token not in self.__sessions:
+        #     return {
+        #         "found" : False,
+        #         "message" : "Session expired or not found."
+        #     }
 
         postal_code = data["postal_code"]
         town = data["town"]

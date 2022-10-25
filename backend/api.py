@@ -41,6 +41,11 @@ class HDBImageSearch(APIConnector):
     def __init__(self, api_key, cx):
         super().__init__(api_key=api_key, url="https://www.googleapis.com/customsearch/v1?key={}&cx={}&q=Singapore%20{}")
         self.__cx = cx
+        self.__blacklist = [
+            "placeholder.png",
+            "certified-purple.png",
+            "icon-hdb.png"
+        ]
         # self.__url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&q=Singapore%20{}"
     
     def call(self, postal_code:str) -> Union[dict, None]:
@@ -49,6 +54,10 @@ class HDBImageSearch(APIConnector):
             )
 
         data = requests.get(url).json()
+
+        for x in self.__blacklist:
+            if x in data["items"][0]["pagemap"]["cse_image"][0]["src"]:
+                return None
 
         try:
             return data["items"][0]["pagemap"]["cse_image"][0]["src"]
