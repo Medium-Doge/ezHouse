@@ -9,7 +9,8 @@ const Login = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || "/";
+    const from = "/";
+    //const from = "/predictPrice";
 
     const userRef = useRef();
     const errRef = useRef();
@@ -41,18 +42,16 @@ const Login = () => {
             //console.log(JSON.stringify(response));
             const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
-            // if(roles == "2001"){
-            //     navigate(from, { replace: true });
-            // }
-            //console.log(accessToken);
-            //console.log(roles);
-             setAuth({ user, pwd, roles, accessToken });
-             setUser('');
-             setPwd('');
-             navigate(from, { replace: true });
+            setAuth({ user, pwd, roles, accessToken});
+             //setUser('');
+             //setPwd('');
+            navigate(from, { replace: true });
+            //navigate("/predictPrice");
+
             //console.log("test");
         } catch (err) {
             if (!err?.response) {
+                console.log(err?.response);
                 setErrMsg('No Server Response');
             } else if (err.response?.status === 400) {
                 setErrMsg('Missing Username or Password');

@@ -7,13 +7,12 @@ import Unauthorized from './authorisation/Unauthorized';
 import Register from './authorisation/Register';
 import Login from './authorisation/Login';
 import RequireAuth from './authorisation/RequireAuth';
-import PredictPrice from './predictprice';
+import PredictPrice from './predictprice/PredictPrice';
 
 import {
   BrowserRouter,
   Routes,
   Route,
-  Link,
 } from "react-router-dom";
 
 const ROLES = {
@@ -31,7 +30,6 @@ function Home() {
 
 function App() {
   return (
-    <BrowserRouter>
       <Routes>
       <Route path="/" element={<Home/>} />
           {/* public routes */}
@@ -39,19 +37,15 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="unauthorized" element={<Unauthorized />} />
           <Route path="index" element={<Home />} />
-          <Route path="predictPrice" element={<PredictPrice />} />
 
-          {/* <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+          {/* protected routes */}
+          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
               <Route path="predictPrice" element={<PredictPrice />} />
-          </Route> */}
+          </Route>
           {/* catch all */}
 
           <Route path="*" element={<Missing />} />
       </Routes>
-      </BrowserRouter>
-
-
-
   );
 }
 

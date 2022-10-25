@@ -8,18 +8,14 @@ import css from './homepage.css';
 import axios from 'axios';
 
 const Homepage = () => {
+
     const { setAuth } = useContext(AuthContext);
 
     let navigate = useNavigate();
-    const routeChange = () => {
-        navigate('/predictPrice');
-    }
-
 
     const [flat_type, setFlatType] = useState([])
     const [storey_ranges, setStoreyRange] = useState([])
     const [towns, setTowns] = useState([])
-
 
     useEffect(() => {
 
@@ -76,8 +72,8 @@ const Homepage = () => {
 
     const handleSubmit = (event) => {
         console.log(values);
-        navigate('/predictprice', { state : values})
-    
+        navigate('/predictPrice', { state : values})
+
     }
 
     return (
