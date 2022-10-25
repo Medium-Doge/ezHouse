@@ -289,9 +289,9 @@ class Server():
             return "Unable to verify session of username that does not exist in database.", 500
 
         if data["username"] in self.__sessions:
-            return True
+            return {"valid_session" : True}
         else:
-            return False
+            return {"valid_session" : False}
 
 
 def main():
