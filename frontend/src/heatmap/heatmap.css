@@ -7,10 +7,11 @@
 }
 
 .heatmap_title {
-    font-size: 26px;
+    font-size: 40px;
     font-weight: bolder;
     color: #4A73A1;
     margin-left: 40px;
+    margin-bottom: 15px;
 }
 
 .leaflet-div-icon {
