@@ -77,7 +77,7 @@ class Server():
             # storey_range = request.args.get("storey_range")
             data = request.get_json()
             return self.getPrediction(data)
-            return self.getPrediction(postal_code, town, flat_type, storey_range)
+            # return self.getPrediction(postal_code, town, flat_type, storey_range)
 
         @self.app.route("/recentlysold", methods=["GET"])
         def __getRecentlySold():
@@ -287,10 +287,11 @@ class Server():
             token = sha256("".join(random.choices(string.ascii_lowercase, k=20)).encode("utf-8")).hexdigest()
             self.__sessions[token] = True
             return {
-                "username"  : data["username"],
-                "SUCCESS"   : True,
-                "message"   : "Successfully login.",
-                "session"   : token
+                "username"      : data["username"],
+                "SUCCESS"       : True,
+                "message"       : "Successfully login.",
+                "accessToken"   : token,
+                "roles"         : 2001
             }
 
         else:
