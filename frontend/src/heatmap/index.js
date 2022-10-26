@@ -348,8 +348,9 @@ const Heatmap = () => {
                                     <img class="drawer_img" style={{ width: "150px", height: "150px" }} src={record.img}></img>
                                     <div class="drawer_bodytextwrap">
                                         <div>
-                                            House {index + 1}
+                                            {record.block + " " + record.street_name}
                                         </div>
+                                        <div>Type: {record.flat_model + " " + record.flat_type} </div>
                                         <div>Price: <br />${record.resale_price.toLocaleString()}.00</div>
                                     </div>
                                 </div>

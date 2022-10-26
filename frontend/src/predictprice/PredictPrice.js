@@ -186,10 +186,10 @@ const PredictPrice = () => {
             <div class="predictprice_amenitiestext">Amenities</div>
             <div class="predictprice_filterwrap">
               <span class="predictprice_filterText">FILTER BY:</span>
-              <button className={filterVal == 'food' ? "predictprice_filterbutton activeButton" : "predictprice_filterbutton"} onClick={filterCategories("food")}>FOOD</button>
-              <button className={filterVal == 'transport' ? "predictprice_filterbutton activeButton" : "predictprice_filterbutton"} onClick={filterCategories("transport")}>TRANSPORT</button>
-              <button className={filterVal == 'education' ? "predictprice_filterbutton activeButton" : "predictprice_filterbutton"} onClick={filterCategories("education")}>EDUCATION</button>
-              <button className={filterVal == 'leisure' ? "predictprice_filterbutton activeButton" : "predictprice_filterbutton"} onClick={filterCategories("leisure")}>LEISURE</button>
+              <button style={{color: "red", border: "1px solid red", backgroundColor: "white"}} className={filterVal == 'food' ? "predictprice_filterbutton activeButton" : "predictprice_filterbutton"} onClick={filterCategories("food")}>FOOD</button>
+              <button style={{color: "green", border: "1px solid green", backgroundColor: "white"}} className={filterVal == 'transport' ? "predictprice_filterbutton activeButton" : "predictprice_filterbutton"} onClick={filterCategories("transport")}>TRANSPORT</button>
+              <button style={{color: "purple", border: "1px solid purple", backgroundColor: "white"}} className={filterVal == 'education' ? "predictprice_filterbutton activeButton" : "predictprice_filterbutton"} onClick={filterCategories("education")}>EDUCATION</button>
+              <button style={{color: "orange", border: "1px solid orange", backgroundColor: "white"}} className={filterVal == 'leisure' ? "predictprice_filterbutton activeButton" : "predictprice_filterbutton"} onClick={filterCategories("leisure")}>LEISURE</button>
 
             </div>
             <div class="predictprice_amenitiescontentwrap">
@@ -248,7 +248,7 @@ const PredictPrice = () => {
         />
       </div>
       <div class="predictprice_historywrap">
-            <div class="predictprice_historytext">History</div>
+            <div class="predictprice_historytext">Previously Sold</div>
 
             <div class="predictprice_historycontentwrap">
             <div class="predictprice_oneAmenities">

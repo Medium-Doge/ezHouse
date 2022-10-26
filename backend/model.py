@@ -53,21 +53,27 @@ class RegressionTreeModel():
         # self.__resale.rename(columns = {"remaining_lease":"remaining_lease (months)"}, inplace=True)
         # self.__resale["remaining_lease (months)"] = self.__resale["remaining_lease (months)"].astype("int64")
 
-        # export towns, floor_types, storey_ranges before encoding them
-        self.__towns = list(self.__resale["town"].unique())
-        self.__towns.sort()
-
-        self.__flat_types = list(self.__resale["flat_type"].unique())
-        self.__flat_types.sort()
-
-        self.__storey_ranges = list(self.__resale["storey_range"].unique())
-        self.__storey_ranges.sort()
+        # export towns, floor_types, storey_ranges before encoding the
 
         self.resale_train = self.__resale.copy()
+
+        self.__towns = list(self.resale_train["town"].unique())
+        self.__towns.remove("KALLANG/WHAMPOA")
+        self.__towns.append("KALLANG_WHAMPOA")
+        self.__towns.sort()
+
+        self.__flat_types = list(self.resale_train["flat_type"].unique())
+        self.__flat_types.sort()
+
+        self.__storey_ranges = list(self.resale_train["storey_range"].unique())
+        self.__storey_ranges.sort()
+
         # encode categorial variables
         self.resale_train = pd.get_dummies(self.resale_train, columns=["town", "flat_type", "storey_range", "flat_model"])
         self.resale_train.columns = self.resale_train.columns.str.replace(" ","")
         self.resale_train.columns = self.resale_train.columns.str.replace("/","_")
+
+        print(self.__towns)
 
     def setPredictors(self):
         # get predictors

@@ -68,7 +68,7 @@ class Server():
         def __hello_world():
             return self.hello_world()
 
-        @self.app.route("/predict", methods=["POST"])
+        @self.app.route("/api/predict", methods=["POST"])
         def __getPrediction():
             # lease = request.args.get("lease")
             # postal_code = request.args.get("postal_code")
@@ -77,17 +77,17 @@ class Server():
             # storey_range = request.args.get("storey_range")
             data = request.get_json()
             return self.getPrediction(data)
-            return self.getPrediction(postal_code, town, flat_type, storey_range)
+            # return self.getPrediction(postal_code, town, flat_type, storey_range)
 
-        @self.app.route("/recentlysold", methods=["GET"])
+        @self.app.route("/api/recentlysold", methods=["GET"])
         def __getRecentlySold():
             return self.getRecentlySold()
 
-        @self.app.route("/categories", methods=["GET"])
+        @self.app.route("/api/categories", methods=["GET"])
         def __getCategories():
             return self.getCategories()
 
-        @self.app.route("/image", methods=["POST"])
+        @self.app.route("/api/image", methods=["POST"])
         def __getImage():
             data = request.get_json(silent=True)
             if data == None:
@@ -95,12 +95,12 @@ class Server():
 
             return self.getImage(data)
 
-        @self.app.route("/amenities", methods=["GET"])
+        @self.app.route("/api/amenities", methods=["GET"])
         def __getAmenities():
             postal_code = request.args.get("postal_code")
             return self.getAmenities(postal_code)
 
-        @self.app.route("/register", methods=["POST"])
+        @self.app.route("/api/register", methods=["POST"])
         def __register():
             data = request.get_json(silent=True)
             if data == None:
@@ -108,7 +108,7 @@ class Server():
 
             return self.register(data)
 
-        @self.app.route("/login", methods=["POST"])
+        @self.app.route("/api/login", methods=["POST"])
         def __login():
             data = request.get_json(silent=True)
             if data == None:
@@ -116,7 +116,7 @@ class Server():
             
             return self.login(data)
 
-        @self.app.route("/validsession", methods=["POST"])
+        @self.app.route("/api/validsession", methods=["POST"])
         def __validSession():
             data = request.get_json(silent=True)
             if data == None:
@@ -131,13 +131,13 @@ class Server():
 
     def getPrediction(self, data:dict):
 
-        token = data["session"]
+        # token = data["session"]
 
-        if token not in self.__sessions:
-            return {
-                "found" : False,
-                "message" : "Session expired or not found."
-            }
+        # if token not in self.__sessions:
+        #     return {
+        #         "found" : False,
+        #         "message" : "Session expired or not found."
+        #     }
 
         postal_code = data["postal_code"]
         town = data["town"]
@@ -287,10 +287,11 @@ class Server():
             token = sha256("".join(random.choices(string.ascii_lowercase, k=20)).encode("utf-8")).hexdigest()
             self.__sessions[token] = True
             return {
-                "username"  : data["username"],
-                "SUCCESS"   : True,
-                "message"   : "Successfully login.",
-                "session"   : token
+                "username"      : data["username"],
+                "SUCCESS"       : True,
+                "message"       : "Successfully login.",
+                "accessToken"   : token,
+                "roles"         : 2001
             }
 
         else:

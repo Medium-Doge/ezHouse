@@ -78,8 +78,7 @@
 }
 
 .activeButton {
-    border: 2px solid #4A73A1;
-    color: #4A73A1;
+    background-color: lightblue !important;
 }
 .predictprice_amentieswrap {
     margin-top: 20px;
@@ -106,11 +105,13 @@
 .predictprice_oneAmenitiesImg {
     width: 150px;
     height: 150px;
+    min-width: 150px;
+    min-height: 150px;
 }
 .predictprice_oneAmenitiesTextWrap {
     display: inline-block;
     width: 100%;
-    margin-left: 10px;
+    margin-left: 20px;
 }
 .predictprice_oneAmenitiesTitle {
     padding-bottom: 20px;
@@ -128,7 +129,7 @@
         top: "40%";
         left: "45%";
  }
- predictprice_historywrap {
+ .predictprice_historywrap {
     margin-left: 10px;
  }
 .predictprice_historytext {

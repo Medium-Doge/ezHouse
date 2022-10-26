@@ -84,10 +84,10 @@ const Homepage = () => {
 
             <div class="homepage_body">
                 <div class="homepage_bodyt1">Locate your dream home</div>
-                <div>One stop service to locate your dream home in Singapore with Artificial Intelligence price predictor</div>
+                <div>One stop service to locate your dream home in Singapore with Artificial Intelligence price predictor.</div>
 
                 <form class="form-inline homepage_form" onSubmit={handleSubmit}>
-                    <input type="text" class="fontAwesome form_element text" name="postalcode" placeholder="&#xF002; Enter postal code" value={values.postalcode} onChange={handlePostalCodeChange} />
+                    <input type="text" class="fontAwesome form_element text" name="postalcode" placeholder="   &#xF002; Enter postal code" value={values.postalcode} onChange={handlePostalCodeChange} />
                     <select id="flatstorey" class="form_element select" onChange={handleFlatStoreyChange}>
                         <option value="" disabled selected hidden>FLAT STOREY</option>
                         {storey_ranges.map((option, index) => (
