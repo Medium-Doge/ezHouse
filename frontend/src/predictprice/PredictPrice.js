@@ -74,12 +74,12 @@ const PredictPrice = () => {
     console.log(state)
     axios({
       method: 'post',
-      url: 'http://13.228.217.57:5000/predict',
-      data: {"postal_code": state.postal_code, 
-              "town": state.town, 
-              "flat_type": state.flat_type, 
-              "storey_range": state.storey_range, 
-              "session": "1ee990060ea77e2a079861ff02fa3619a29dbb8beca06f05e606309efe853070" 
+      url: 'http://13.228.217.57:5000/api/predict',
+      data: {"postal_code": state.postal_code,
+              "town": state.town,
+              "flat_type": state.flat_type,
+              "storey_range": state.storey_range,
+              "session": "1ee990060ea77e2a079861ff02fa3619a29dbb8beca06f05e606309efe853070"
             }
     })
       .then(res => {
@@ -212,7 +212,7 @@ const PredictPrice = () => {
 
             </div>
           </div>
-          
+
 
         </div>
         <div class="predictprice_mapwrapper">
@@ -237,7 +237,7 @@ const PredictPrice = () => {
             </Marker>
           </MapContainer>
         </div>
-        
+
         <Loader
           color={"#36d7b7"}
           loading={loading}

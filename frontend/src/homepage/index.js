@@ -21,7 +21,7 @@ const Homepage = () => {
 
         axios({
             method: 'get',
-            url:'http://13.228.217.57:5000/categories'})
+            url:'http://13.228.217.57:5000/api/categories'})
             .then(res => {
             console.log(res.data);
             setTowns(res.data.towns);
