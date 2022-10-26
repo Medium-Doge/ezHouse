@@ -16,9 +16,9 @@
 
 }
 .homepage_title {
-    font-size: 26px;
+    font-size: 48px;
     font-weight: bolder;
-    margin-left: 10px;
+    margin-left: 15px;
 }
 .homepage_body {
     margin: 0 auto;
@@ -27,8 +27,8 @@
 }
 .homepage_bodyt1 {
     margin: 10px 0;
-    font-weight: bold;
-    font-size: 16px;
+    font-weight: 600;
+    font-size: 40px;
 }
 .triangle {
     position: absolute;
