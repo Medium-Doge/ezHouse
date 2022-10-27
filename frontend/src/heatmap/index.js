@@ -148,7 +148,7 @@ const Heatmap = () => {
         setLoading(true);
         axios({
             method: 'get',
-            url: 'http://13.228.217.57:5000/recentlysold'
+            url: 'http://13.228.217.57:5000/api/recentlysold'
         })
             .then(res => {
                 const x = res.data;
@@ -264,7 +264,7 @@ const Heatmap = () => {
         console.log(postalcodesArray);
         axios({
             method: 'post',
-            url: 'http://13.228.217.57:5000/image',
+            url: 'http://13.228.217.57:5000/api/image',
             data: { "postalcodes": postalcodesArray }
         })
             .then(res => {
