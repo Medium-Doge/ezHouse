@@ -103,7 +103,7 @@ const PredictPrice = () => {
     setLoading(true);
     axios({
       method: 'get',
-      url: 'http://13.228.217.57:5000/amenities?postal_code=' + state.postal_code
+      url: 'http://13.228.217.57:5000/api/amenities?postal_code=' + state.postal_code
     })
       .then(res => {
         console.log(res.data);

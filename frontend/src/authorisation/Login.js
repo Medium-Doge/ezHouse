@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from '../api/axios';
+import logincss from './authorisation.css';
 const LOGIN_URL = '/auth';
 
 const Login = () => {
@@ -42,9 +43,9 @@ const Login = () => {
             //console.log(JSON.stringify(response));
             const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
-            setAuth({ user, pwd, roles, accessToken});
-             //setUser('');
-             //setPwd('');
+            setAuth({ user, pwd, roles, accessToken });
+            //setUser('');
+            //setPwd('');
             navigate(from, { replace: true });
             //navigate("/predictPrice");
 
@@ -66,38 +67,53 @@ const Login = () => {
 
     return (
 
-        <section>
-            <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-            <h1>Sign In</h1>
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="username">Username:</label>
-                <input
-                    type="text"
-                    id="username"
-                    ref={userRef}
-                    autoComplete="off"
-                    onChange={(e) => setUser(e.target.value)}
-                    value={user}
-                    required
-                />
+        <div class="login_wrapper">
+            <div class="signin_wrapper">
+                <div>
 
-                <label htmlFor="password">Password:</label>
-                <input
-                    type="password"
-                    id="password"
-                    onChange={(e) => setPwd(e.target.value)}
-                    value={pwd}
-                    required
-                />
-                <button>Sign In</button>
-            </form>
-            <p>
-                Need an Account?<br />
-                <span className="line">
-                    <Link to="/register">Sign Up</Link>
-                </span>
-            </p>
-        </section>
+                <div ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</div>
+                <div class="signin_text">SIGN IN</div>
+                <form onSubmit={handleSubmit}>
+                    <div class="input-group-wrap">
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input
+                                    type="text"
+                                    id="username"
+                                    ref={userRef}
+                                    autoComplete="off"
+                                    onChange={(e) => setUser(e.target.value)}
+                                    value={user}
+                                    required
+                                />
+                                <span class="omrs-input-label">Username</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="input-group-wrap">
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined">
+                                <input
+                                    type="password"
+                                    id="password"
+                                    onChange={(e) => setPwd(e.target.value)}
+                                    value={pwd}
+                                    required
+                                />
+                                <span class="omrs-input-label">Password</span>
+                            </label>
+                        </div>
+                    </div>
+                    <button class="signin_button">SIGN IN</button>
+                </form>
+                <p>
+                    Don't have an account? Sign Up&nbsp;<span className="line">
+                        <Link to="/register">here</Link>
+                    </span>
+                </p>
+            </div>
+            </div>
+        </div>
 
     )
 }

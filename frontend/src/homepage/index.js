@@ -18,10 +18,10 @@ const Homepage = () => {
     const [towns, setTowns] = useState([])
 
     useEffect(() => {
-
         axios({
             method: 'get',
             url:'http://13.228.217.57:5000/api/categories'})
+            // url: process.env.REACT_APP_ENDPOINT + '/api/categories'})
             .then(res => {
             console.log(res.data);
             setTowns(res.data.towns);
