@@ -74,7 +74,8 @@ const PredictPrice = () => {
     console.log(state)
     axios({
       method: 'post',
-      url: 'http://13.228.217.57:5000/api/predict',
+      url: process.env.REACT_APP_ENDPOINT + '/api/predict',
+      // url: 'http://13.228.217.57:5000/api/predict',
       data: {"postal_code": state.postal_code,
               "town": state.town,
               "flat_type": state.flat_type,
@@ -103,7 +104,8 @@ const PredictPrice = () => {
     setLoading(true);
     axios({
       method: 'get',
-      url: 'http://13.228.217.57:5000/api/amenities?postal_code=' + state.postal_code
+      // url: 'http://13.228.217.57:5000/api/amenities?postal_code=' + state.postal_code
+      url: process.env.REACT_APP_ENDPOINT + '/api/amenities?postal_code=' + state.postal_code
     })
       .then(res => {
         console.log(res.data);
