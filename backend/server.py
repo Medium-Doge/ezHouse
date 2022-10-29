@@ -260,6 +260,7 @@ class Server():
             else:
                 images[postal] = self.hdb_image_api.call(postal)
                 self.__cache.add(postal, images[postal])
+                print(postal, images[postal])
                 print("HDB image added to cache.")
 
         self.__cache.save("hdb")

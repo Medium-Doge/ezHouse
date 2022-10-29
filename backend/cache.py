@@ -23,4 +23,4 @@ class Cache():
         self.__data[key] = value
 
     def get(self, key):
-        return self.__data
+        return self.__data[key]
