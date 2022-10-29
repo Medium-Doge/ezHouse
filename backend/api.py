@@ -3,6 +3,8 @@ import requests
 import mysql.connector
 from cache import Cache
 
+PLACEHOLDER = "https://s3-ap-southeast-1.amazonaws.com/static.streetsine/Web/Version_4/Assets/project/placeholder.png"
+
 class APIConnector():
     """
     APIConnector abstract parent class. For a new API service, create a class that inherits from APIConnector, and override the
@@ -58,12 +60,12 @@ class HDBImageSearch(APIConnector):
 
         for x in self.__blacklist:
             if x in data["items"][0]["pagemap"]["cse_image"][0]["src"]:
-                return None
+                return PLACEHOLDER
 
         try:
             return data["items"][0]["pagemap"]["cse_image"][0]["src"]
         except:
-            return None
+            return PLACEHOLDER
 
 class AmenitiesSearch(APIConnector):
     def __init__(self, api_key):
@@ -123,10 +125,11 @@ class AmenitiesSearch(APIConnector):
                                             image_ref = result["photos"][0]["photo_reference"],
                                             api_key = self._API_KEY)).url
 
-                                self.__cache.add(result["place_id"], image)
-
                         except KeyError: # image could not be found
-                            image = None
+                            image = PLACEHOLDER
+
+                        finally:
+                            self.__cache.add(result["place_id"], image)
 
                         data["results"].append({
                             "name"      : result["name"] if type_ != "subway_station" else "{} MRT".format(result["name"]),

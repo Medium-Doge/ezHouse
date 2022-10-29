@@ -22,6 +22,8 @@ from expiring_dict import ExpiringDict
 GOOGLE_API_KEY = "AIzaSyDi6uFfup3Xhc4Y2azQ-VY-rdvridd22B4"
 CX = "57ca1c7140b714b5b"
 
+PLACEHOLDER = "https://s3-ap-southeast-1.amazonaws.com/static.streetsine/Web/Version_4/Assets/project/placeholder.png"
+
 class Server():
     def __init__(self, name):
         """
@@ -178,6 +180,8 @@ class Server():
             image = self.__cache.get(postal_code)
         else:
             image = self.hdb_image_api.call(postal_code)
+            if image == None: image = PLACEHOLDER
+                
             self.__cache.add(postal_code, image)
 
         self.__cache.save("hdb")
