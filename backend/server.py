@@ -100,29 +100,37 @@ class Server():
             postal_code = request.args.get("postal_code")
             return self.getAmenities(postal_code)
 
-        @self.app.route("/api/register", methods=["POST"])
-        def __register():
-            data = request.get_json(silent=True)
-            if data == None:
-                return "Body is not JSON type or Request is not POST", 500
-
-            return self.register(data)
-
-        @self.app.route("/api/login", methods=["POST"])
-        def __login():
+        @self.app.route("/api/soldintown", methods=["POST"])
+        def __getSoldInTown():
             data = request.get_json(silent=True)
             if data == None:
                 return "Body is not JSON type or Request is not POST", 500
             
-            return self.login(data)
+            return self.getSoldInTown(data["town"])
 
-        @self.app.route("/api/validsession", methods=["POST"])
-        def __validSession():
-            data = request.get_json(silent=True)
-            if data == None:
-                return "Body is not JSON type or Request is not POST", 500
+        # @self.app.route("/api/register", methods=["POST"])
+        # def __register():
+        #     data = request.get_json(silent=True)
+        #     if data == None:
+        #         return "Body is not JSON type or Request is not POST", 500
+
+        #     return self.register(data)
+
+        # @self.app.route("/api/login", methods=["POST"])
+        # def __login():
+        #     data = request.get_json(silent=True)
+        #     if data == None:
+        #         return "Body is not JSON type or Request is not POST", 500
             
-            return self.validSession(data)
+        #     return self.login(data)
+
+        # @self.app.route("/api/validsession", methods=["POST"])
+        # def __validSession():
+        #     data = request.get_json(silent=True)
+        #     if data == None:
+        #         return "Body is not JSON type or Request is not POST", 500
+            
+        #     return self.validSession(data)
 
         # === END OF FLASK API ROUTES ===
             
@@ -260,46 +268,50 @@ class Server():
 
         return self.amenities_api.call([lat,lon])
 
-    def register(self, data:dict):
-        if self.ezhouse_db.validUsername(data["username"]):
-            return {
-                "username"  : data["username"],
-                "SUCCESS"   : False,
-                "message"   : "Username already exists!"
-            }
+    def getSoldInTown(self, town):
+        return self.regression_tree.getSoldHDBsInTown(town)
 
-        # if data["role"] not in self.ezhouse_db.getRoles():
-        #     return {
-        #         "username"  : data["username"],
-        #         "SUCCESS"   : False,
-        #         "message"   : "Invalid role."
-        #     }
 
-        self.ezhouse_db.append(data["username"], data["password"])
-        return {
-            "username"  : data["username"],
-            "SUCCESS"   : True,
-            "message"   : "Account added to database."
-        }
+    # def register(self, data:dict):
+    #     if self.ezhouse_db.validUsername(data["username"]):
+    #         return {
+    #             "username"  : data["username"],
+    #             "SUCCESS"   : False,
+    #             "message"   : "Username already exists!"
+    #         }
 
-    def login(self, data:dict):
-        if self.ezhouse_db.validAccount(data["username"], data["password"]):
-            token = sha256("".join(random.choices(string.ascii_lowercase, k=20)).encode("utf-8")).hexdigest()
-            self.__sessions[token] = True
-            return {
-                "username"      : data["username"],
-                "SUCCESS"       : True,
-                "message"       : "Successfully login.",
-                "accessToken"   : token,
-                "roles"         : 2001
-            }
+    #     # if data["role"] not in self.ezhouse_db.getRoles():
+    #     #     return {
+    #     #         "username"  : data["username"],
+    #     #         "SUCCESS"   : False,
+    #     #         "message"   : "Invalid role."
+    #     #     }
 
-        else:
-            return {
-                "username"  : data["username"],
-                "SUCCESS"   : False,
-                "message"   : "Username or password is wrong."
-            }
+    #     self.ezhouse_db.append(data["username"], data["password"])
+    #     return {
+    #         "username"  : data["username"],
+    #         "SUCCESS"   : True,
+    #         "message"   : "Account added to database."
+    #     }
+
+    # def login(self, data:dict):
+    #     if self.ezhouse_db.validAccount(data["username"], data["password"]):
+    #         token = sha256("".join(random.choices(string.ascii_lowercase, k=20)).encode("utf-8")).hexdigest()
+    #         self.__sessions[token] = True
+    #         return {
+    #             "username"      : data["username"],
+    #             "SUCCESS"       : True,
+    #             "message"       : "Successfully login.",
+    #             "accessToken"   : token,
+    #             "roles"         : 2001
+    #         }
+
+    #     else:
+    #         return {
+    #             "username"  : data["username"],
+    #             "SUCCESS"   : False,
+    #             "message"   : "Username or password is wrong."
+    #         }
 
     # def validSession(self, data):
     #     """

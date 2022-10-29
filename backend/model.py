@@ -134,3 +134,7 @@ class RegressionTreeModel():
     def getHistory(self , postal_code):
         data = self.__resale.loc[self.__resale["postal_code"] == postal_code].to_dict("records")
         return data if data else None
+
+    def getSoldHDBsInTown(self, town):
+        data = self.__resale.loc[self.__resale["town"] == town].to_dict("records")
+        return {"results" : data} if data else {"results" : None}
