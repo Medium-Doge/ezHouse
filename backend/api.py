@@ -44,7 +44,8 @@ class HDBImageSearch(APIConnector):
         self.__blacklist = [
             "placeholder.png",
             "certified-purple.png",
-            "icon-hdb.png"
+            "icon-hdb.png",
+            "Agency"
         ]
         # self.__url = "https://www.googleapis.com/customsearch/v1?key={}&cx={}&q=Singapore%20{}"
     
@@ -112,23 +113,20 @@ class AmenitiesSearch(APIConnector):
                     count = 0
 
                     for result in temp["results"]:
-                        if self.__cache.exists(result["photos"][0]["photo_reference"]):
-                            image == self.__cache.get(result["photos"][0]["photo_reference"])
-                            print("Amenities image retrieved in cache")
+                        try:
+                            if self.__cache.exists(result["place_id"]):
+                                image = self.__cache.get(result["place_id"])
 
-                        else:
-                            try:
+                            else:
                                 image = requests.get(self.__image_url.format(
                                             width = 400,
                                             image_ref = result["photos"][0]["photo_reference"],
                                             api_key = self._API_KEY)).url
-                            except KeyError: # image could not be found
-                                image = None
-                            finally:
-                                self.__cache.add(result["photos"][0]["photo_reference"], image)
-                                print("Amenities image added to cache")
 
-                        self.__cache.save("amenities")
+                                self.__cache.add(result["place_id"], image)
+
+                        except KeyError: # image could not be found
+                            image = None
 
                         data["results"].append({
                             "name"      : result["name"] if type_ != "subway_station" else "{} MRT".format(result["name"]),
@@ -145,6 +143,8 @@ class AmenitiesSearch(APIConnector):
 
                         if count == self.__max_results:
                             break
+
+        self.__cache.save("amenities")
 
         return data
 

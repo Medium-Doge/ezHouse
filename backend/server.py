@@ -142,15 +142,12 @@ class Server():
         #         "message" : "Session expired or not found."
         #     }
 
-        print("inside predict")
         postal_code = data["postal_code"]
         town = data["town"]
         flat_type = data["flat_type"]
         storey_range = data["storey_range"]
 
-        print("before onemap")
         one_map_data = self.one_map_api.call(postal_code)
-        print("after onemap")
 
         if (one_map_data["found"] == 0 
                 or postal_code not in self.regression_tree.getAllPostalCodes()
@@ -165,7 +162,6 @@ class Server():
                 "predicted_price" : None
             }
 
-        print("before predict")
 
         # hdb_info = self.regression_tree.hdb_info
         predictors = dict(zip(self.regression_tree.getPredictors(), [0] * len(self.regression_tree.getPredictors())))
@@ -245,7 +241,7 @@ class Server():
         }
 
     def getImage(self, data:dict) -> dict:
-        if len(data) > 30:
+        if len(data["postalcodes"]) > 30:
             return {
                 "status" : "BAD", 
                 "message" : "Too many requests (> 30)"
@@ -256,12 +252,9 @@ class Server():
         for postal in data["postalcodes"]:
             if self.__cache.exists(postal):
                 images[postal] = self.__cache.get(postal)
-                print("HDB image retrieved from cache.")
             else:
                 images[postal] = self.hdb_image_api.call(postal)
                 self.__cache.add(postal, images[postal])
-                print(postal, images[postal])
-                print("HDB image added to cache.")
 
         self.__cache.save("hdb")
 
@@ -282,7 +275,14 @@ class Server():
         return self.amenities_api.call([lat,lon])
 
     def getSoldInTown(self, town:str, page:int):
-        return self.regression_tree.getSoldHDBsInTown(town, page)
+        data = self.regression_tree.getSoldHDBsInTown(town, page)
+        for i in range(len(data["results"])):
+            if self.__cache.exists(data["results"][i]["postal_code"]):
+                data["results"][i]["image"] = self.__cache.get(data["results"][i]["postal_code"])
+            else:
+                data["results"][i]["image"] = self.getImage({"postalcodes":[data["results"][i]["postal_code"]]})
+
+        return data
 
 
     # def register(self, data:dict):
