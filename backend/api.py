@@ -1,6 +1,7 @@
 from typing import Union
 import requests
 import mysql.connector
+from cache import Cache
 
 class APIConnector():
     """
@@ -20,7 +21,6 @@ class APIConnector():
 class OneMapSearch(APIConnector):
     def __init__(self):
         super().__init__(url="https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=Y")
-        # self.__url = "https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=Y"
 
     def call(self, postal_code:Union[int, str]):
         """
@@ -79,8 +79,9 @@ class AmenitiesSearch(APIConnector):
         }
         self.__radius = 1000 # radius to search for places (in metres)
         self.__max_results = 2 # maximum results to return from subcategories (see self.__types)
-        # self.__url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?type={type}&location={location}&radius={radius}&key={api_key}"
         self.__image_url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth={width}&photo_reference={image_ref}&key={api_key}"
+
+        self.__cache = Cache("amenities")
 
     def call(self, coord:list) -> dict:
         """
@@ -111,13 +112,23 @@ class AmenitiesSearch(APIConnector):
                     count = 0
 
                     for result in temp["results"]:
-                        try:
-                            image = requests.get(self.__image_url.format(
-                                        width = 400,
-                                        image_ref = result["photos"][0]["photo_reference"],
-                                        api_key = self._API_KEY)).url
-                        except KeyError: # image could not be found
-                            image = None
+                        if self.__cache.exists(result["photos"][0]["photo_reference"]):
+                            image == self.__cache.get(result["photos"][0]["photo_reference"])
+                            print("Amenities image retrieved in cache")
+
+                        else:
+                            try:
+                                image = requests.get(self.__image_url.format(
+                                            width = 400,
+                                            image_ref = result["photos"][0]["photo_reference"],
+                                            api_key = self._API_KEY)).url
+                            except KeyError: # image could not be found
+                                image = None
+                            finally:
+                                self.__cache.add(result["photos"][0]["photo_reference"], image)
+                                print("Amenities image added to cache")
+
+                        self.__cache.save("amenities")
 
                         data["results"].append({
                             "name"      : result["name"] if type_ != "subway_station" else "{} MRT".format(result["name"]),

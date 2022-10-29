@@ -135,6 +135,6 @@ class RegressionTreeModel():
         data = self.__resale.loc[self.__resale["postal_code"] == postal_code].to_dict("records")
         return data if data else None
 
-    def getSoldHDBsInTown(self, town):
-        data = self.__resale.loc[self.__resale["town"] == town].to_dict("records")
+    def getSoldHDBsInTown(self, town, page):
+        data = self.__resale.loc[self.__resale["town"] == town].to_dict("records")[(page*10)-10:page*2]
         return {"results" : data} if data else {"results" : None}

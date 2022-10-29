@@ -12,13 +12,12 @@ pip install expiring-dict
 """
 # self created libraries
 from api import HDBImageSearch, OneMapSearch, AmenitiesSearch, ezHouseDatabase
+from cache import Cache
 from model import RegressionTreeModel
 
 from flask import Flask, request
 from flask_cors import CORS
 from expiring_dict import ExpiringDict
-from hashlib import sha256
-import random, string
 
 GOOGLE_API_KEY = "AIzaSyDi6uFfup3Xhc4Y2azQ-VY-rdvridd22B4"
 CX = "57ca1c7140b714b5b"
@@ -53,9 +52,11 @@ class Server():
         self.ezhouse_db = ezHouseDatabase()
         print("Done.")
 
-        print("Initialising sessions data...")
-        self.__sessions = ExpiringDict(900)
-        print("Done.")
+        # print("Initialising sessions data...")
+        # self.__sessions = ExpiringDict(900)
+        # print("Done.")
+
+        self.__cache = Cache("hdb")
 
         print("Initialising API server...")
         self.app = Flask(name)
@@ -70,14 +71,8 @@ class Server():
 
         @self.app.route("/api/predict", methods=["POST"])
         def __getPrediction():
-            # lease = request.args.get("lease")
-            # postal_code = request.args.get("postal_code")
-            # town = request.args.get("town")
-            # flat_type = request.args.get("flat_type")
-            # storey_range = request.args.get("storey_range")
             data = request.get_json()
             return self.getPrediction(data)
-            # return self.getPrediction(postal_code, town, flat_type, storey_range)
 
         @self.app.route("/api/recentlysold", methods=["GET"])
         def __getRecentlySold():
@@ -106,7 +101,7 @@ class Server():
             if data == None:
                 return "Body is not JSON type or Request is not POST", 500
             
-            return self.getSoldInTown(data["town"])
+            return self.getSoldInTown(data["town"], data["page"])
 
         # @self.app.route("/api/register", methods=["POST"])
         # def __register():
@@ -147,12 +142,15 @@ class Server():
         #         "message" : "Session expired or not found."
         #     }
 
+        print("inside predict")
         postal_code = data["postal_code"]
         town = data["town"]
         flat_type = data["flat_type"]
         storey_range = data["storey_range"]
 
+        print("before onemap")
         one_map_data = self.one_map_api.call(postal_code)
+        print("after onemap")
 
         if (one_map_data["found"] == 0 
                 or postal_code not in self.regression_tree.getAllPostalCodes()
@@ -167,6 +165,8 @@ class Server():
                 "predicted_price" : None
             }
 
+        print("before predict")
+
         # hdb_info = self.regression_tree.hdb_info
         predictors = dict(zip(self.regression_tree.getPredictors(), [0] * len(self.regression_tree.getPredictors())))
 
@@ -176,10 +176,16 @@ class Server():
         predictors["flat_type_{}".format(flat_type.replace(" ",""))] = 1
         predictors["storey_range_{}".format(storey_range.replace(" ",""))] = 1
 
-        # predictors = pd.DataFrame([predictors])
-
         house_info = self.regression_tree.getHouseInfo(postal_code)
-        
+
+        if self.__cache.exists(postal_code):
+            image = self.__cache.get(postal_code)
+        else:
+            image = self.hdb_image_api.call(postal_code)
+            self.__cache.add(postal_code, image)
+
+        self.__cache.save("hdb")
+
         return {
             "found"                 : True,
             "latitude"              : one_map_data["results"][0]["LATITUDE"],
@@ -210,13 +216,11 @@ class Server():
             "3room_rental"          : int(house_info["3room_rental"]),
             "other_room_rental"     : int(house_info["other_room_rental"]),
             "address"               : house_info["address"],
-            "image"                 : self.hdb_image_api.call(postal_code),
+            "image"                 : image,
             "history"               : self.regression_tree.getHistory(postal_code)
         }
         
     def getRecentlySold(self) -> dict:
-        # date = format(datetime.now() - relativedelta(months=1), "%Y-%m") + "-01"
-        # recent = self.regression_tree.resale.loc[self.regression_tree.resale["month"] >= date]
         recent = self.regression_tree.getRecent()
 
         data = dict()
@@ -250,7 +254,15 @@ class Server():
         images = dict()
         images["status"] = "OK"
         for postal in data["postalcodes"]:
-            images[postal] = self.hdb_image_api.call(postal)
+            if self.__cache.exists(postal):
+                images[postal] = self.__cache.get(postal)
+                print("HDB image retrieved from cache.")
+            else:
+                images[postal] = self.hdb_image_api.call(postal)
+                self.__cache.add(postal, images[postal])
+                print("HDB image added to cache.")
+
+        self.__cache.save("hdb")
 
         return images
 
@@ -268,8 +280,8 @@ class Server():
 
         return self.amenities_api.call([lat,lon])
 
-    def getSoldInTown(self, town):
-        return self.regression_tree.getSoldHDBsInTown(town)
+    def getSoldInTown(self, town:str, page:int):
+        return self.regression_tree.getSoldHDBsInTown(town, page)
 
 
     # def register(self, data:dict):
