@@ -8,7 +8,6 @@ pip install Flask==2.1.2
 pip install werkzeug==2.1.2
 pip install flask-cors
 pip install mysql-connector
-pip install expiring-dict
 """
 # self created libraries
 from api import HDBImageSearch, OneMapSearch, AmenitiesSearch, ezHouseDatabase
