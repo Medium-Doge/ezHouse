@@ -148,7 +148,8 @@ const Heatmap = () => {
         setLoading(true);
         axios({
             method: 'get',
-            url: process.env.REACT_APP_ENDPOINT + '/api/recentlysold',
+            url: (process.env.REACT_APP_ENDPOINT) + '/api/recentlysold',
+            timeout: 2000
             // url: 'http://13.228.217.57:5000/api/recentlysold'
         })
             .then(res => {
@@ -165,6 +166,10 @@ const Heatmap = () => {
                 setLocationValues(locations);
                 setLoading(false);
             })
+            .catch(() => {
+                setLoading(false);
+            })
+      
 
     }, []);
 
@@ -374,8 +379,6 @@ const Heatmap = () => {
                 />
             </div>
 
-            <div class="emptyspace">
-            </div>
         </div>
     )
 }

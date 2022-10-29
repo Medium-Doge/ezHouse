@@ -8,6 +8,9 @@ import Register from './authorisation/Register';
 import Login from './authorisation/Login';
 import RequireAuth from './authorisation/RequireAuth';
 import PredictPrice from './predictprice/PredictPrice';
+import Navbar from './navbar/Navbar';
+import Footer from './footer/Footer';
+import { SearchHouses } from './searchHouses/SearchHouses';
 
 import {
   BrowserRouter,
@@ -30,6 +33,8 @@ function Home() {
 
 function App() {
   return (
+    <>
+      <Navbar></Navbar>
       <Routes>
       <Route path="/" element={<Home/>} />
           {/* public routes */}
@@ -37,6 +42,7 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="unauthorized" element={<Unauthorized />} />
           <Route path="index" element={<Home />} />
+          <Route path="searchHouses" element={<SearchHouses/>}/>
           {/* <Route path="predictPrice" element={<PredictPrice />} /> */}
 
           {/* protected routes */}
@@ -47,6 +53,8 @@ function App() {
 
           <Route path="*" element={<Missing />} />
       </Routes>
+      <Footer></Footer>
+      </>
   );
 }
 

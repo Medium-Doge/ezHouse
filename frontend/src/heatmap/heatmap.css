@@ -4,6 +4,7 @@
 }
 .heatmap_wrapper {
     position: relative;
+    margin-bottom: 10px;
 }
 
 .heatmap_title {

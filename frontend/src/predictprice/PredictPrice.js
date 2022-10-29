@@ -94,8 +94,6 @@ const PredictPrice = () => {
       })
       .catch(function (error) {
         if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
           console.log(error.response.data);
           console.log(error.response.status);
           console.log(error.response.headers);
@@ -105,15 +103,13 @@ const PredictPrice = () => {
     axios({
       method: 'get',
       // url: 'http://13.228.217.57:5000/api/amenities?postal_code=' + state.postal_code
-      url: process.env.REACT_APP_ENDPOINT + '/api/amenities?postal_code=' + state.postal_code
+      url: process.env.REACT_APP_ENDPOINT + '/api/amenities?postal_code=' + state.postal_code,
+      timeout: 4000
     })
       .then(res => {
         console.log(res.data);
         setAmenities(res.data.results);
-
         setMarkers(res.data.results);
-        // console.log(markerObj);
-        // console.log(amenities);
         setLoading(false);
 
       })
@@ -164,9 +160,10 @@ const PredictPrice = () => {
         <div id="loadingOverlay" class="loadingOverlay pageOverlay"></div>
 
       }
-      <div class="predictprice_title">
+
+      {/* <div class="predictprice_title">
         ezHouse
-      </div>
+      </div> */}
 
       <div class="predictprice_wrapper">
         <div class="predictprice_textwrapper">

@@ -11,7 +11,7 @@
     background-size: cover;
     z-index: 0;
     position: relative;
-
+    
     color: white;
 
 }
@@ -23,7 +23,7 @@
 .homepage_body {
     margin: 0 auto;
     width: 50%;
-    margin-top: 150px;
+    padding-top: 150px;
 }
 .homepage_bodyt1 {
     margin: 10px 0;

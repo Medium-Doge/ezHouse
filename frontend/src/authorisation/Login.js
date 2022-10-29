@@ -3,6 +3,7 @@ import useAuth from '../hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from '../api/axios';
 import logincss from './authorisation.css';
+
 const LOGIN_URL = '/auth';
 
 const Login = () => {
@@ -66,8 +67,8 @@ const Login = () => {
     }
 
     return (
-
-        <div class="login_wrapper">
+        <>
+                <div class="login_wrapper">
             <div class="signin_wrapper">
                 <div>
 
@@ -114,7 +115,7 @@ const Login = () => {
             </div>
             </div>
         </div>
-
+        </>
     )
 }
 

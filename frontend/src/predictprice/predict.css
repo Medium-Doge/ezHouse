@@ -15,6 +15,7 @@
 
 .predictprice_wrapper {
     display: flex;
+    margin-top: 10px;
     margin-left: 10px;
     
 }
@@ -131,6 +132,8 @@
  }
  .predictprice_historywrap {
     margin-left: 10px;
+    
+    margin-bottom: 30px;
  }
 .predictprice_historytext {
     font-size: 26px;
