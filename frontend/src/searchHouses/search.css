@@ -1,0 +1,39 @@
+.predictprice_amenitiescontentwrap {
+    max-height: 400px;
+    margin-top: 15px;
+    overflow-y: scroll;
+}
+.searchHouse_selectWrapper {
+    margin: 10px;
+}
+.searchHouse_select {
+    border: 2px solid black;
+}
+
+.searchHouse_oneHouseWrap {
+    display: flex;
+    align-items: center;
+    margin: 20px 10px;
+    padding: 5px;
+    border: 1px solid black;
+    
+}
+.searchouse_oneHouseImg {
+    width: 250px;
+    height: 250px;
+    min-width: 150px;
+    min-height: 150px;
+}
+.searchHouse_textWrap {
+    display: inline-block;
+    width: 100%;
+    margin-left: 20px;
+}
+.searchHouse_oneHouseTitle {
+    padding-bottom: 20px;
+    font-weight: bold;
+}
+
+.searchHouse_oneHouseText {
+    padding-bottom: 20px;
+}
