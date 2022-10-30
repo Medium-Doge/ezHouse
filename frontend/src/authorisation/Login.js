@@ -10,7 +10,7 @@ const Login = () => {
     const { setAuth } = useAuth();
 
     const navigate = useNavigate();
-    const location = useLocation();
+    const {state} = useLocation();
     const from = "/";
     //const from = "/predictPrice";
 
@@ -22,6 +22,9 @@ const Login = () => {
     const [errMsg, setErrMsg] = useState('');
 
     useEffect(() => {
+        if (state.alert != null) {
+            alert(state.alert)
+        }
         userRef.current.focus();
     }, [])
 

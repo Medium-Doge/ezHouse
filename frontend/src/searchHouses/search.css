@@ -37,3 +37,7 @@
 .searchHouse_oneHouseText {
     padding-bottom: 20px;
 }
+
+#predictprice_historytable th {
+    background-color: #4A73A1;
+}
