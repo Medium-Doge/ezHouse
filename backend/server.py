@@ -148,6 +148,12 @@ class Server():
         flat_type = data["flat_type"]
         storey_range = data["storey_range"]
 
+        if postal_code == "" or postal_code == None:
+            return {
+                "found" : False,
+                "predicted_price" : None
+            }
+
         one_map_data = self.one_map_api.call(postal_code)
 
         if (one_map_data["found"] == 0 
@@ -244,11 +250,11 @@ class Server():
         }
 
     def getImage(self, data:dict) -> dict:
-        if len(data["postalcodes"]) > 30:
-            return {
-                "status" : "BAD", 
-                "message" : "Too many requests (> 30)"
-            }
+        # if len(data["postalcodes"]) > 30:
+        #     return {
+        #         "status" : "BAD", 
+        #         "message" : "Too many requests (> 30)"
+        #     }
 
         images = dict()
         images["status"] = "OK"

@@ -58,12 +58,13 @@ class HDBImageSearch(APIConnector):
 
         data = requests.get(url).json()
 
-        for x in self.__blacklist:
-            if x in data["items"][0]["pagemap"]["cse_image"][0]["src"]:
-                return PLACEHOLDER
-
         try:
-            return data["items"][0]["pagemap"]["cse_image"][0]["src"]
+            for x in self.__blacklist:
+                if x in data["items"][0]["pagemap"]["cse_image"][0]["src"]:
+                    return PLACEHOLDER
+
+            
+                return data["items"][0]["pagemap"]["cse_image"][0]["src"]
         except:
             return PLACEHOLDER
 
@@ -77,11 +78,11 @@ class AmenitiesSearch(APIConnector):
             "food"      : ["restaurant"], 
             "transport" : ["subway_station"], 
             "leisure"   : ["shopping_mall"],
-            # "education" : ["primary_school", "secondary_school", "university"]
-            "education" : ["primary_school", "secondary_school"]
+            "education" : ["primary_school", "secondary_school", "university"]
+            # "education" : ["primary_school", "secondary_school"]
         }
         self.__radius = 1000 # radius to search for places (in metres)
-        self.__max_results = 2 # maximum results to return from subcategories (see self.__types)
+        self.__max_results = 5 # maximum results to return from subcategories (see self.__types)
         self.__image_url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth={width}&photo_reference={image_ref}&key={api_key}"
 
         self.__cache = Cache("amenities")
