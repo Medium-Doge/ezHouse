@@ -104,7 +104,7 @@ class RegressionTreeModel():
 
     def predict(self, predictors:dict) -> int:
         predictors = pd.DataFrame([predictors])
-        return self.__model.predict(predictors)[0]
+        return int(self.__model.predict(predictors)[0])
 
     def getHouseInfo(self, postal_code) -> dict:
         return self.__hdb_info.loc[self.__hdb_info["postal_code"] == postal_code].iloc[0]

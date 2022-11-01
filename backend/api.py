@@ -61,12 +61,13 @@ class HDBImageSearch(APIConnector):
         try:
             for x in self.__blacklist:
                 if x in data["items"][0]["pagemap"]["cse_image"][0]["src"]:
-                    return PLACEHOLDER
+                    raise Exception
 
         except:
             return PLACEHOLDER
 
-        return data["items"][0]["pagemap"]["cse_image"][0]["src"]
+        else:
+            return data["items"][0]["pagemap"]["cse_image"][0]["src"]
 
 class AmenitiesSearch(APIConnector):
     def __init__(self, api_key):
