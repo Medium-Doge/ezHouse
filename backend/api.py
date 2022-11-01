@@ -63,10 +63,10 @@ class HDBImageSearch(APIConnector):
                 if x in data["items"][0]["pagemap"]["cse_image"][0]["src"]:
                     return PLACEHOLDER
 
-            
-                return data["items"][0]["pagemap"]["cse_image"][0]["src"]
         except:
             return PLACEHOLDER
+
+        return data["items"][0]["pagemap"]["cse_image"][0]["src"]
 
 class AmenitiesSearch(APIConnector):
     def __init__(self, api_key):
