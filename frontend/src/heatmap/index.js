@@ -265,7 +265,7 @@ const Heatmap = () => {
         let postalcodesArray = [];
         for (let x = 0; x < locationValues[index].records.length; x++) {
             postalcodesArray[x] = String(locationValues[index].records[x].postal_code);
-            if (x == 29) break; //limit to 30
+            // if (x == 29) break; //limit to 30
         }
         console.log(postalcodesArray);
         axios({
