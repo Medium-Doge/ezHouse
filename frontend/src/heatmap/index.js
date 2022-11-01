@@ -86,40 +86,40 @@ const fetchIcon = (count, size) => {
 const Heatmap = () => {
 
     const locations = [
-        { "name": "jurong west", "position": [1.3435001655425816, 103.70334820770225], "totalrecords": 0, "records": [] },
-        { "name": "boon lay", "position": [1.3132791418613987, 103.70128876968724], "totalrecords": 0, "records": [] },
-        { "name": "jurong east", "position": [1.3160265228775339, 103.73355329858906], "totalrecords": 0, "records": [] },
+        { "name": "jurong West", "position": [1.3435001655425816, 103.70334820770225], "totalrecords": 0, "records": [] },
+        { "name": "boon Lay", "position": [1.3132791418613987, 103.70128876968724], "totalrecords": 0, "records": [] },
+        { "name": "jurong East", "position": [1.3160265228775339, 103.73355329858906], "totalrecords": 0, "records": [] },
         { "name": "pioneer", "position": [1.3105317578251232, 103.66902424078542], "totalrecords": 0, "records": [] },
         { "name": "clementi", "position": [1.3174002122510786, 103.75895303410752], "totalrecords": 0, "records": [] },
-        { "name": "bukit timah", "position": [1.3277028583560022, 103.79053108367104], "totalrecords": 0, "records": [] },
-        { "name": "bukit batok", "position": [1.3551763704852338, 103.75346119940082], "totalrecords": 0, "records": [] },
+        { "name": "bukit Timah", "position": [1.3277028583560022, 103.79053108367104], "totalrecords": 0, "records": [] },
+        { "name": "bukit Batok", "position": [1.3551763704852338, 103.75346119940082], "totalrecords": 0, "records": [] },
         { "name": "tengah", "position": [1.3620447000702194, 103.72737498454404], "totalrecords": 0, "records": [] },
-        { "name": "choa chu kang", "position": [1.386495597286298, 103.7455989072713], "totalrecords": 0, "records": [] },
-        { "name": "bukit panjang", "position": [1.3634183636412216, 103.77062318285925], "totalrecords": 0, "records": [] },
+        { "name": "choa Chu Kang", "position": [1.386495597286298, 103.7455989072713], "totalrecords": 0, "records": [] },
+        { "name": "bukit Panjang", "position": [1.3634183636412216, 103.77062318285925], "totalrecords": 0, "records": [] },
         { "name": "queenstown", "position": [1.2803103359031265, 103.77748797624263], "totalrecords": 0, "records": [] },
-        { "name": "bukit merah", "position": [1.2739114383233257, 103.82181422395736], "totalrecords": 0, "records": [] },
+        { "name": "bukit Merah", "position": [1.2739114383233257, 103.82181422395736], "totalrecords": 0, "records": [] },
         { "name": "tanglin", "position": [1.3082700975171921, 103.81530222083379], "totalrecords": 0, "records": [] },
         { "name": "newton", "position": [1.308098385759878, 103.83932899767558], "totalrecords": 0, "records": [] },
         { "name": "orchard", "position": [1.3035480199139788, 103.83272163404405], "totalrecords": 0, "records": [] },
-        { "name": "river valley", "position": [1.29685124013572, 103.83452364230723], "totalrecords": 0, "records": [] },
+        { "name": "river Valley", "position": [1.29685124013572, 103.83452364230723], "totalrecords": 0, "records": [] },
         { "name": "rochor", "position": [1.3037197319821734, 103.85245791502126], "totalrecords": 0, "records": [] },
         { "name": "outram", "position": [1.2830028508200781, 103.84034567653346], "totalrecords": 0, "records": [] },
-        { "name": "downtown core", "position": [1.2838706449635333, 103.85441866913885], "totalrecords": 0, "records": [] },
-        { "name": "marina south", "position": [1.2628676759594684, 103.8758052124139], "totalrecords": 0, "records": [] },
-        { "name": "marina east", "position": [1.286233633379564, 103.87155590165384], "totalrecords": 0, "records": [] },
-        { "name": "marine parade", "position": [1.2821125121278913, 103.9034771908865], "totalrecords": 0, "records": [] },
+        { "name": "downtown Core", "position": [1.2838706449635333, 103.85441866913885], "totalrecords": 0, "records": [] },
+        { "name": "marina South", "position": [1.2628676759594684, 103.8758052124139], "totalrecords": 0, "records": [] },
+        { "name": "marina East", "position": [1.286233633379564, 103.87155590165384], "totalrecords": 0, "records": [] },
+        { "name": "marine Parade", "position": [1.2821125121278913, 103.9034771908865], "totalrecords": 0, "records": [] },
         { "name": "geylang", "position": [1.3229634499283442, 103.89010280799121], "totalrecords": 0, "records": [] },
         { "name": "bedok", "position": [1.3219497364900725, 103.92475805037495], "totalrecords": 0, "records": [] },
         { "name": "tampines", "position": [1.3398075962485543, 103.95530638093094], "totalrecords": 0, "records": [] },
         { "name": "changi", "position": [1.3481185405557317, 103.9976522956096], "totalrecords": 0, "records": [] },
-        { "name": "pasir ris", "position": [1.3782631955430769, 103.96219402261721], "totalrecords": 0, "records": [] },
-        { "name": "toa payoh", "position": [1.337043690523248, 103.8585247584277], "totalrecords": 0, "records": [] },
+        { "name": "pasir Ris", "position": [1.3782631955430769, 103.96219402261721], "totalrecords": 0, "records": [] },
+        { "name": "toa Payoh", "position": [1.337043690523248, 103.8585247584277], "totalrecords": 0, "records": [] },
         { "name": "novena", "position": [1.3223371044136139, 103.8355554425874], "totalrecords": 0, "records": [] },
         { "name": "kallang", "position": [1.3116910130680615, 103.86541729380507], "totalrecords": 0, "records": [] },
         { "name": "serangoon", "position": [1.3720817415516937, 103.86643015491924], "totalrecords": 0, "records": [] },
         { "name": "hougang", "position": [1.3634963623020968, 103.8866812954002], "totalrecords": 0, "records": [] },
-        { "name": "paya lebar", "position": [1.35908293756251, 103.91432894666156], "totalrecords": 0, "records": [] },
-        { "name": "ang mo kio", "position": [1.3813539165262414, 103.83725478303992], "totalrecords": 0, "records": [] },
+        { "name": "paya Lebar", "position": [1.35908293756251, 103.91432894666156], "totalrecords": 0, "records": [] },
+        { "name": "ang Mo Kio", "position": [1.3813539165262414, 103.83725478303992], "totalrecords": 0, "records": [] },
         { "name": "bishan", "position": [1.3549109524320786, 103.83622506403243], "totalrecords": 0, "records": [] },
         { "name": "sengkang", "position": [1.3906796074457959, 103.88892925268547], "totalrecords": 0, "records": [] },
         { "name": "punggol", "position": [1.4056179762139827, 103.90832229399345], "totalrecords": 0, "records": [] },
@@ -127,7 +127,7 @@ const Heatmap = () => {
         { "name": "sembawang", "position": [1.4560986472134911, 103.81736378166386], "totalrecords": 0, "records": [] },
         { "name": "woodlands", "position": [1.440645498838367, 103.78492763292746], "totalrecords": 0, "records": [] },
         { "name": "mandai", "position": [1.422616693333251, 103.80775307092715], "totalrecords": 0, "records": [] },
-        { "name": "lim chu kang", "position": [1.4315452623513631, 103.7173094181013], "totalrecords": 0, "records": [] },
+        { "name": "lim Chu Kang", "position": [1.4315452623513631, 103.7173094181013], "totalrecords": 0, "records": [] },
         { "name": "seletar", "position": [1.415775838721734, 103.87780550240396], "totalrecords": 0, "records": [] }
     ]
 
@@ -149,7 +149,7 @@ const Heatmap = () => {
         axios({
             method: 'get',
             url: (process.env.REACT_APP_ENDPOINT) + '/api/recentlysold',
-            timeout: 2000
+            timeout: 10000
             // url: 'http://13.228.217.57:5000/api/recentlysold'
         })
             .then(res => {

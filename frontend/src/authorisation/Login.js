@@ -24,7 +24,8 @@ const Login = () => {
     useEffect(() => {
         if (state != null) { // some browser got weird issue
             if (state.alert != null) {
-                alert(state.alert)   
+                alert(state.alert)  
+                state.alert = null 
             }
         }
         userRef.current.focus();

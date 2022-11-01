@@ -18,7 +18,7 @@ export const SearchHouses = () => {
       method: 'post',
       url: (process.env.REACT_APP_ENDPOINT) + '/api/soldintown',
       data: { "town": searchValue, "page": 1 },
-      timeout: 3000
+      timeout: 10000
     })
       .then(res => {
         console.log(res.data);
@@ -62,7 +62,7 @@ export const SearchHouses = () => {
       method: 'post',
       url: (process.env.REACT_APP_ENDPOINT) + '/api/soldintown',
       data: { "town": townToSearch, "page": currentPage },
-      timeout: 3000
+      timeout: 10000
     })
       .then(res => {
         console.log(res.data);

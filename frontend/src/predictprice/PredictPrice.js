@@ -104,7 +104,7 @@ const PredictPrice = () => {
       method: 'get',
       // url: 'http://13.228.217.57:5000/api/amenities?postal_code=' + state.postal_code
       url: process.env.REACT_APP_ENDPOINT + '/api/amenities?postal_code=' + state.postal_code,
-      timeout: 4000
+      timeout: 60000
     })
       .then(res => {
         console.log(res.data);
