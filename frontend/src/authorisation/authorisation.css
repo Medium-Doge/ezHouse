@@ -57,6 +57,16 @@
 }
 
 
+.offscreen {
+	display : none;
+}
+
+.instructions {
+	display: block;
+	color: red;
+	text-align: left;
+}
+
 
 
 

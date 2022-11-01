@@ -88,9 +88,9 @@ const Register = () => {
             ) : (
                 <div class="login_wrapper">
                     <div class="signin_wrapper">
-                          <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
                         <div class="signin_text">SIGN UP</div>
-
+                        <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+                    
                         <form onSubmit={handleSubmit}>
                             <div class="input-group-wrap">
                                 <div class="omrs-input-group">
@@ -110,12 +110,12 @@ const Register = () => {
                                         />
                                         <span class="omrs-input-label">Username</span>
                                         <span class="omrs-input-helper">
-                                            {/* <p id="uidnote" className={userFocus && user && !validName ? "instructions" : "offscreen"}>
-                                                <FontAwesomeIcon icon={faInfoCircle} />
+                                            <p id="uidnote" className={userFocus && user && !validName ? "instructions" : "offscreen"}>
+                                                {/* <FontAwesomeIcon icon={faInfoCircle} /><br></br> */}
                                                 4 to 24 characters.<br />
                                                 Must begin with a letter.<br />
                                                 Letters, numbers, underscores, hyphens allowed.
-                                            </p> */}
+                                            </p>
                                             </span>
                                     </label>
                                 </div>
@@ -136,12 +136,12 @@ const Register = () => {
                                         />
                                         <span class="omrs-input-label">Password</span>
                                         <span class="omrs-input-helper">
-                                            {/* <p id="pwdnote" className={pwdFocus && !validPwd ? "instructions" : "offscreen"}>
-                                                <FontAwesomeIcon icon={faInfoCircle} />
+                                            <p id="pwdnote" className={pwdFocus && !validPwd ? "instructions" : "offscreen"}>
+                                                {/* <FontAwesomeIcon icon={faInfoCircle} /><br/> */}
                                                 8 to 24 characters.<br />
                                                 Must include uppercase and lowercase letters, a number and a special character.<br />
                                                 Allowed special characters: <span aria-label="exclamation mark">!</span> <span aria-label="at symbol">@</span> <span aria-label="hashtag">#</span> <span aria-label="dollar sign">$</span> <span aria-label="percent">%</span>
-                                            </p> */}
+                                            </p>
                                         </span>
                                     </label>
                                 </div>
@@ -162,10 +162,9 @@ const Register = () => {
                                         />
                                         <span class="omrs-input-label">Confirm Password</span>
                                         <span class="omrs-input-helper">
-                                            {/* <p id="confirmnote" className={matchFocus && !validMatch ? "instructions" : "offscreen"}>
-                                                <FontAwesomeIcon icon={faInfoCircle} />
-                                                Must match the first password input field.
-                                            </p> */}
+                                            <p id="confirmnote" className={matchFocus && !validMatch ? "instructions" : "offscreen"}>
+                                                Must match the password input field.
+                                            </p>
                                             </span>
                                     </label>
                                 </div>

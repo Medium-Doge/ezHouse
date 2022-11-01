@@ -22,8 +22,10 @@ const Login = () => {
     const [errMsg, setErrMsg] = useState('');
 
     useEffect(() => {
-        if (state != null) {
-            alert(state.alert)
+        if (state != null) { // some browser got weird issue
+            if (state.alert != null) {
+                alert(state.alert)   
+            }
         }
         userRef.current.focus();
     }, [])
@@ -75,10 +77,12 @@ const Login = () => {
             <div class="signin_wrapper">
                 <div>
 
-                <div ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</div>
+                
                 <div class="signin_text">SIGN IN</div>
                 <form onSubmit={handleSubmit}>
                     <div class="input-group-wrap">
+                        
+                    <div ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</div>
                         <div class="omrs-input-group">
                             <label class="omrs-input-underlined">
                                 <input
