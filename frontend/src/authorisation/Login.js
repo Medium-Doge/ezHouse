@@ -22,7 +22,7 @@ const Login = () => {
     const [errMsg, setErrMsg] = useState('');
 
     useEffect(() => {
-        if (state.alert != null) {
+        if (state != null) {
             alert(state.alert)
         }
         userRef.current.focus();
