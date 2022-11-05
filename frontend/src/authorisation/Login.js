@@ -3,14 +3,15 @@ import useAuth from '../hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from '../api/axios';
 import logincss from './authorisation.css';
+import Loader from "react-spinners/ClipLoader";
 
 const LOGIN_URL = '/auth';
 
 const Login = () => {
     const { setAuth } = useAuth();
-
+    let [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const {state} = useLocation();
+    const { state } = useLocation();
     const from = "/";
     //const from = "/predictPrice";
 
@@ -24,8 +25,8 @@ const Login = () => {
     useEffect(() => {
         if (state != null) { // some browser got weird issue
             if (state.alert != null) {
-                alert(state.alert)  
-                state.alert = null 
+                alert(state.alert)
+                state.alert = null
             }
         }
         userRef.current.focus();
@@ -39,6 +40,7 @@ const Login = () => {
         e.preventDefault();
 
         try {
+            setLoading(true)
             const response = await axios.post(LOGIN_URL,
                 JSON.stringify({ user, pwd }),
                 {
@@ -50,6 +52,7 @@ const Login = () => {
             //console.log(JSON.stringify(response));
             const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
+            setLoading(false)
             setAuth({ user, pwd, roles, accessToken });
             //setUser('');
             //setPwd('');
@@ -58,6 +61,7 @@ const Login = () => {
 
             //console.log("test");
         } catch (err) {
+            setLoading(false)
             if (!err?.response) {
                 console.log(err?.response);
                 setErrMsg('No Server Response');
@@ -74,55 +78,68 @@ const Login = () => {
 
     return (
         <>
-                <div class="login_wrapper">
-            <div class="signin_wrapper">
-                <div>
+            {
+                loading &&
+                <div id="loadingOverlay" class="loadingOverlay pageOverlay"></div>
 
-                
-                <div class="signin_text">SIGN IN</div>
-                <form onSubmit={handleSubmit}>
-                    <div class="input-group-wrap">
-                        
-                    <div ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</div>
-                        <div class="omrs-input-group">
-                            <label class="omrs-input-underlined">
-                                <input
-                                    type="text"
-                                    id="username"
-                                    ref={userRef}
-                                    autoComplete="off"
-                                    onChange={(e) => setUser(e.target.value)}
-                                    value={user}
-                                    required
-                                />
-                                <span class="omrs-input-label">Username</span>
-                            </label>
-                        </div>
+            }
+            <div class="login_wrapper">
+                <div class="signin_wrapper">
+                    <div>
+
+
+                        <div class="signin_text">SIGN IN</div>
+                        <form onSubmit={handleSubmit}>
+                            <div class="input-group-wrap">
+
+                                <div ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</div>
+                                <div class="omrs-input-group">
+                                    <label class="omrs-input-underlined">
+                                        <input
+                                            type="text"
+                                            id="username"
+                                            ref={userRef}
+                                            autoComplete="off"
+                                            onChange={(e) => setUser(e.target.value)}
+                                            value={user}
+                                            required
+                                        />
+                                        <span class="omrs-input-label">Username</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="input-group-wrap">
+                                <div class="omrs-input-group">
+                                    <label class="omrs-input-underlined">
+                                        <input
+                                            type="password"
+                                            id="password"
+                                            onChange={(e) => setPwd(e.target.value)}
+                                            value={pwd}
+                                            required
+                                        />
+                                        <span class="omrs-input-label">Password</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <button class="signin_button">SIGN IN</button>
+                        </form>
+                        <p>
+                            Don't have an account? Sign Up&nbsp;<span className="line">
+                                <Link to="/register">here</Link>
+                            </span>
+                        </p>
                     </div>
-                    <div class="input-group-wrap">
-                        <div class="omrs-input-group">
-                            <label class="omrs-input-underlined">
-                                <input
-                                    type="password"
-                                    id="password"
-                                    onChange={(e) => setPwd(e.target.value)}
-                                    value={pwd}
-                                    required
-                                />
-                                <span class="omrs-input-label">Password</span>
-                            </label>
-                        </div>
-                    </div>
-                    <button class="signin_button">SIGN IN</button>
-                </form>
-                <p>
-                    Don't have an account? Sign Up&nbsp;<span className="line">
-                        <Link to="/register">here</Link>
-                    </span>
-                </p>
+                    <Loader
+                        color={"#36d7b7"}
+                        loading={loading}
+                        className="loader"
+                        size={150}
+                        aria-label="Loading Spinner"
+                        data-testid="loader"
+                    />
+                </div>
             </div>
-            </div>
-        </div>
         </>
     )
 }

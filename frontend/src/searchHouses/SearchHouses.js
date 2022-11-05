@@ -116,7 +116,7 @@ export const SearchHouses = () => {
                   <img class="searchouse_oneHouseImg" src={oneHouse.image == null ? "https://via.placeholder.com/150" : oneHouse.image}></img>
                   <div class="searchHouse_textWrap">
                     <div class="searchHouse_oneHouseTitle">ADDRESS: {oneHouse.block + " " + oneHouse.street_name}</div>
-                    <div class="searchHouse_oneHouseText">MODEL: {oneHouse.flat_model + " " + oneHouse.flat_type}</div>
+                    <div class="searchHouse_oneHouseText">TYPE: {oneHouse.flat_model + " " + oneHouse.flat_type}</div>
                     <div class="searchHouse_oneHouseText">PRICE: {oneHouse.resale_price != null ? oneHouse.resale_price.toLocaleString() : oneHouse.resale_price}</div>
                     <div class="searchHouse_oneHouseText">STOREY: {oneHouse.storey_range}</div>
                     <div class="searchHouse_oneHouseText">SPACE: {oneHouse.floor_area_sqm}</div>
