@@ -18,9 +18,6 @@ from flask import Flask, request
 from flask_cors import CORS
 from expiring_dict import ExpiringDict
 
-GOOGLE_API_KEY = "AIzaSyDi6uFfup3Xhc4Y2azQ-VY-rdvridd22B4"
-CX = "57ca1c7140b714b5b"
-
 PLACEHOLDER = "https://s3-ap-southeast-1.amazonaws.com/static.streetsine/Web/Version_4/Assets/project/placeholder.png"
 
 class Server():
